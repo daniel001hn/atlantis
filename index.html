@@ -281,6 +281,17 @@ footer{background:var(--ink);padding:56px 20px}
 .foot-links a:hover{color:#fff}
 .foot-bot{border-top:1px solid rgba(255,255,255,.1);margin-top:32px;padding-top:32px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
 .foot-bot *{color:rgba(255,255,255,.2);font-size:.75rem;text-decoration:none;margin:0}
+.foot-fin{display:flex;align-items:center;gap:20px}
+/* "Entrar" con borde: sin él se pierde al lado del otro enlace y hay que
+   adivinar dónde tocar. Sigue siendo discreto — es del mismo gris que el resto
+   del pie — pero se ve que es un botón. */
+.foot-bot .entrar{border:1px solid rgba(255,255,255,.18);border-radius:6px;
+  padding:6px 14px;transition:color .3s,border-color .3s}
+.foot-bot .entrar:hover{color:rgba(255,255,255,.75);border-color:rgba(255,255,255,.45)}
+@media (max-width:520px){
+  /* En el teléfono el pie ya viene apilado; los dos enlaces se separan solos. */
+  .foot-fin{width:100%;justify-content:space-between}
+}
 
 /* ---------- animaciones al scroll ----------
    Todo va detrás de .js: si el JavaScript no carga, el contenido se ve
@@ -830,7 +841,13 @@ function medio(ruta) {
     </div>
     <div class="foot-bot">
       <p>© 2026 Atlantis Villages. Todos los derechos reservados.</p>
-      <a href="privacidad.html">Política de privacidad</a>
+      <div class="foot-fin">
+        <a href="privacidad.html">Política de privacidad</a>
+        <!-- Entrada al panel de fotos. Va discreta a propósito: no le sirve de
+             nada a un huésped, y admin.html ya lleva noindex para que no salga
+             en buscadores. La protección real es la contraseña, no esconderlo. -->
+        <a href="admin.html" class="entrar" rel="nofollow">Entrar</a>
+      </div>
     </div>
   </div>
 </footer>
