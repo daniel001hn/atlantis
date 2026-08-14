@@ -1,0 +1,591 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Atlantis · Fotos</title>
+<style>
+/* Mismos tokens que index.html: si allá cambia el turquesa, acá también. */
+:root{
+  --turq:#5BC8C8;
+  --green-deep:#1F6E6E;
+  --ink:#02211E;
+  --bone:#F9F9F7;
+  --bone-alt:#f0f0ec;
+  --rojo:#c2334d;
+  --ok:#1a7f5a;
+  --display:"Cormorant Garamond",Garamond,Georgia,serif;
+  --body:Inter,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --barra:60px;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background:var(--bone);color:var(--ink);font-family:var(--body);font-size:16px;
+  line-height:1.5;-webkit-font-smoothing:antialiased;
+  /* El área segura del iPhone: sin esto la barra de abajo tapa los botones. */
+  padding-bottom:env(safe-area-inset-bottom);
+}
+button{font-family:inherit;font-size:1rem;cursor:pointer}
+
+/* Todo lo que se toca, mínimo 44px de alto. Es el tamaño de un dedo. */
+.btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
+  min-height:48px;padding:12px 20px;border:0;border-radius:10px;
+  font-weight:500;transition:opacity .2s;
+}
+.btn:active{opacity:.7}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.btn-si{background:var(--green-deep);color:#fff}
+.btn-no{background:transparent;color:var(--ink);border:1px solid rgba(2,33,30,.2)}
+.btn-peligro{background:var(--rojo);color:#fff}
+
+/* ---------- login ---------- */
+#login{min-height:100svh;display:flex;align-items:center;justify-content:center;padding:24px}
+#login .caja{width:100%;max-width:360px;text-align:center}
+#login h1{font-family:var(--display);font-weight:300;font-size:2rem;letter-spacing:.02em;margin:0 0 4px}
+#login .sub{color:rgba(2,33,30,.55);font-size:.9rem;margin:0 0 28px}
+#login label{display:block;text-align:left;font-size:.72rem;letter-spacing:.09em;
+  text-transform:uppercase;color:rgba(2,33,30,.5);margin:16px 0 6px}
+#login input{
+  width:100%;min-height:48px;padding:12px 14px;border:1px solid rgba(2,33,30,.15);
+  border-radius:10px;background:#fff;color:var(--ink);font-family:inherit;font-size:1rem;
+}
+#login input:focus{outline:0;border-color:var(--turq);box-shadow:0 0 0 3px rgba(91,200,200,.25)}
+#login .btn{margin-top:24px}
+
+/* ---------- panel ---------- */
+#panel{display:none}
+#panel.visible{display:block}
+.barra{
+  position:sticky;top:0;z-index:20;background:var(--turq);
+  min-height:var(--barra);display:flex;align-items:center;justify-content:space-between;
+  padding:0 16px;padding-top:env(safe-area-inset-top);
+}
+.barra b{font-family:var(--display);font-weight:400;font-size:1.15rem;letter-spacing:.16em}
+.barra button{background:none;border:0;color:var(--ink);font-size:.82rem;padding:10px;text-decoration:underline}
+.intro{padding:18px 16px 6px;color:rgba(2,33,30,.6);font-size:.86rem}
+
+.rejilla{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:12px 16px 32px}
+@media (min-width:640px){ .rejilla{grid-template-columns:repeat(3,1fr);max-width:900px;margin:0 auto} }
+@media (min-width:960px){ .rejilla{grid-template-columns:repeat(4,1fr);max-width:1200px} }
+
+.slot{
+  background:#fff;border:1px solid rgba(2,33,30,.08);border-radius:12px;overflow:hidden;
+  text-align:left;padding:0;display:flex;flex-direction:column;
+}
+.slot.arrastrando{border-color:var(--turq);box-shadow:0 0 0 3px rgba(91,200,200,.3)}
+.slot .mini{
+  width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:var(--bone-alt);
+}
+.slot .mini.video{background:#02211E}
+.slot .pie{padding:9px 11px}
+.slot .nom{font-size:.82rem;font-weight:500;display:block;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.slot .met{font-size:.7rem;color:rgba(2,33,30,.45);display:block;margin-top:1px}
+.slot .et{
+  display:inline-block;margin-top:6px;font-size:.64rem;letter-spacing:.06em;
+  text-transform:uppercase;padding:2px 7px;border-radius:20px;
+  background:rgba(91,200,200,.22);color:var(--green-deep);
+}
+
+/* ---------- hoja de preview ---------- */
+#hoja{
+  position:fixed;inset:0;z-index:40;background:rgba(2,33,30,.55);
+  display:none;align-items:flex-end;justify-content:center;
+}
+#hoja.visible{display:flex}
+#hoja .cont{
+  background:var(--bone);width:100%;max-width:560px;max-height:92svh;overflow-y:auto;
+  border-radius:16px 16px 0 0;padding:20px 18px calc(20px + env(safe-area-inset-bottom));
+}
+@media (min-width:640px){
+  #hoja{align-items:center}
+  #hoja .cont{border-radius:16px;max-height:88svh}
+}
+#hoja h2{font-family:var(--display);font-weight:400;font-size:1.5rem;margin:0 0 2px}
+#hoja .quien{color:rgba(2,33,30,.5);font-size:.82rem;margin:0 0 18px}
+.compara{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.compara figure{margin:0}
+.compara figcaption{font-size:.68rem;letter-spacing:.07em;text-transform:uppercase;
+  color:rgba(2,33,30,.45);margin-bottom:5px}
+.compara img,.compara video{width:100%;aspect-ratio:4/3;object-fit:cover;
+  border-radius:9px;background:var(--bone-alt);display:block}
+.datos{background:#fff;border-radius:10px;padding:12px 14px;margin-bottom:16px;font-size:.84rem}
+.datos div{display:flex;justify-content:space-between;gap:12px;padding:3px 0}
+.datos div span:first-child{color:rgba(2,33,30,.55)}
+.datos b{font-weight:500}
+.datos .baja{color:var(--ok)}
+#hoja .acciones{display:flex;flex-direction:column;gap:10px}
+
+.aviso{border-radius:10px;padding:12px 14px;font-size:.86rem;margin-bottom:16px}
+.aviso.mal{background:rgba(194,51,77,.09);color:#8a2436}
+.aviso.ok{background:rgba(26,127,90,.1);color:var(--ok)}
+.aviso ul{margin:8px 0 0;padding-left:18px}
+.aviso li{margin:3px 0}
+
+#brindis{
+  position:fixed;left:50%;transform:translateX(-50%);bottom:calc(24px + env(safe-area-inset-bottom));
+  z-index:60;background:var(--ink);color:#fff;padding:13px 22px;border-radius:30px;
+  font-size:.88rem;max-width:90vw;text-align:center;opacity:0;pointer-events:none;transition:opacity .25s;
+}
+#brindis.visible{opacity:1}
+
+.girando{display:inline-block;width:15px;height:15px;border:2px solid rgba(255,255,255,.35);
+  border-top-color:#fff;border-radius:50%;animation:giro .7s linear infinite}
+@keyframes giro{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<section id="login">
+  <div class="caja">
+    <h1>Atlantis Villages</h1>
+    <p class="sub">Panel de fotos</p>
+    <form id="f-login">
+      <label for="correo">Correo</label>
+      <input id="correo" type="email" autocomplete="username" required inputmode="email">
+      <label for="clave">Contraseña</label>
+      <input id="clave" type="password" autocomplete="current-password" required>
+      <div id="login-error" class="aviso mal" style="display:none;margin-top:16px"></div>
+      <button class="btn btn-si" type="submit">Entrar</button>
+    </form>
+  </div>
+</section>
+
+<section id="panel">
+  <div class="barra">
+    <b>FOTOS</b>
+    <button type="button" id="salir">Salir</button>
+  </div>
+  <p class="intro">Tocá un espacio para cambiar su foto. Vas a ver cómo queda antes de publicar.</p>
+  <div class="rejilla" id="rejilla"></div>
+</section>
+
+<div id="hoja">
+  <div class="cont" id="hoja-cont"></div>
+</div>
+
+<div id="brindis"></div>
+
+<!-- El input vive fuera de la rejilla: en iOS, recrearlo por cada toque a
+     veces no abre el carrete. Uno solo, reusado, siempre funciona. -->
+<input type="file" id="archivo" hidden>
+
+<script>
+"use strict";
+
+/* ══════════════════════════════════════════════════════════════════
+   Los 16 espacios. La lista es CERRADA a propósito: el servidor valida
+   contra esta misma lista, así que un id que no esté acá no existe.
+   Los ids son los nombres de archivo actuales sin extensión.
+   ══════════════════════════════════════════════════════════════════ */
+const SLOTS = [
+  { id:"townhouse",         nombre:"Townhouse",          archivo:"fotos/townhouse.webp",         donde:"Alojamiento" },
+  { id:"beach-house",       nombre:"Beach House",        archivo:"fotos/beach-house.webp",       donde:"Alojamiento" },
+  { id:"loft",              nombre:"Loft",               archivo:"fotos/loft.webp",              donde:"Alojamiento" },
+  { id:"habitacion",        nombre:"Habitación",         archivo:"fotos/habitacion.webp",        donde:"Alojamiento" },
+  { id:"ubicacion-playa",   nombre:"Camino a la playa",  archivo:"fotos/ubicacion-playa.webp",   donde:"Lámina de Ubicación" },
+  { id:"piscina-atardecer", nombre:"Piscina",            archivo:"fotos/piscina-atardecer.webp", donde:"Lámina de Piscinas" },
+  { id:"coffee-corner",     nombre:"Coffee corner",      archivo:"fotos/coffee-corner.webp",     donde:"Experiencias" },
+  { id:"kit-playa",         nombre:"Kit de playa",       archivo:"fotos/kit-playa.webp",         donde:"Experiencias" },
+  { id:"masajes",           nombre:"Masajes",            archivo:"fotos/masajes.webp",           donde:"Experiencias" },
+  { id:"tienda",            nombre:"Tienda 24/7",        archivo:"fotos/tienda.webp",            donde:"Experiencias" },
+  { id:"planta-electrica",  nombre:"Planta eléctrica",   archivo:"fotos/planta-electrica.webp",  donde:"Experiencias" },
+  { id:"lancetilla",        nombre:"Lancetilla",         archivo:"fotos/lancetilla.webp",        donde:"Cerca de acá" },
+  { id:"punta-sal",         nombre:"Punta Sal",          archivo:"fotos/punta-sal.webp",         donde:"Cerca de acá" },
+  { id:"logo",              nombre:"Logo",               archivo:"fotos/logo.png",               donde:"Marca", alfa:true },
+  { id:"hero-poster",       nombre:"Portada del video",  archivo:"fotos/hero-poster.webp",       donde:"Hero" },
+  { id:"hero-video",        nombre:"Video del hero",     archivo:"fotos/hero.mp4",               donde:"Hero", video:true }
+];
+
+/* Reglas del video. El navegador NO puede recodificar: solo aceptar o
+   rechazar, y cuando rechaza tiene que decir cómo arreglarlo. */
+const VIDEO = { pesoMax: 3 * 1024 * 1024, segMax: 30, anchoMin: 1280 };
+
+/* Al reducir, el lado más largo se topa acá. La foto más grande del sitio se
+   ve a ~660px CSS; a 2x son 1320. 1600 deja margen y no infla el archivo. */
+const LADO_MAX = 1600;
+
+const $  = s => document.querySelector(s);
+const kb = n => n < 1024 * 1024 ? Math.round(n / 1024) + " KB"
+                                : (n / 1024 / 1024).toFixed(1) + " MB";
+
+let pendiente = null;   // { slot, blob, url, ext, meta }
+let slotActivo = null;
+
+/* ══════════════════════════════════════════════════════════════════
+   Puente hacia el backend de Codex.
+   Todo lo que toque Supabase o GitHub entra y sale por acá. Mientras no
+   exista, el panel corre entero contra estos stubs: se puede probar el
+   flujo completo sin backend. Codex reemplaza window.API y listo.
+   ══════════════════════════════════════════════════════════════════ */
+window.API = window.API || {
+  simulado: true,
+  async entrar(correo, clave) {
+    await new Promise(r => setTimeout(r, 500));
+    if (!correo || !clave) throw Object.assign(new Error("Faltan datos"), { code: "datos" });
+    return { correo };
+  },
+  async salir() {},
+  async sesion() { return null; },
+  async publicarMedio({ slot, blob, ext }) {
+    await new Promise(r => setTimeout(r, 1200));
+    const hash = Math.random().toString(16).slice(2, 6);
+    return { url: `fotos/${slot}-${hash}.${ext}`, hash, commit: "simulado" };
+  }
+};
+
+/* ══════════════════════════════════════════════════════════════════
+   Login
+   ══════════════════════════════════════════════════════════════════ */
+$("#f-login").addEventListener("submit", async e => {
+  e.preventDefault();
+  const btn = e.target.querySelector("button");
+  const err = $("#login-error");
+  err.style.display = "none";
+  btn.disabled = true;
+  btn.innerHTML = '<span class="girando"></span> Entrando…';
+  try {
+    await window.API.entrar($("#correo").value.trim(), $("#clave").value);
+    abrirPanel();
+  } catch (ex) {
+    err.textContent = ex.code === "credenciales"
+      ? "Correo o contraseña incorrectos."
+      : "No se pudo entrar: " + ex.message;
+    err.style.display = "";
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Entrar";
+  }
+});
+
+$("#salir").addEventListener("click", async () => {
+  await window.API.salir();
+  $("#panel").classList.remove("visible");
+  $("#login").style.display = "";
+  $("#clave").value = "";
+});
+
+function abrirPanel() {
+  $("#login").style.display = "none";
+  $("#panel").classList.add("visible");
+  dibujarRejilla();
+  if (window.API.simulado) {
+    brindis("Modo prueba: nada se publica de verdad todavía");
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   Rejilla
+   ══════════════════════════════════════════════════════════════════ */
+function dibujarRejilla() {
+  const r = $("#rejilla");
+  r.innerHTML = "";
+  for (const s of SLOTS) {
+    const el = document.createElement("div");
+    el.className = "slot";
+    el.dataset.id = s.id;
+    el.innerHTML = `
+      ${s.video
+        ? `<video class="mini video" src="${s.archivo}" muted playsinline preload="metadata"></video>`
+        : `<img class="mini" src="${s.archivo}" alt="" loading="lazy">`}
+      <div class="pie">
+        <span class="nom">${s.nombre}</span>
+        <span class="met" data-met>${s.donde}</span>
+        ${s.video ? '<span class="et">video</span>' : ""}
+      </div>`;
+    el.addEventListener("click", () => elegir(s));
+    // Arrastrar y soltar, para cuando se usa desde la compu.
+    el.addEventListener("dragover", ev => { ev.preventDefault(); el.classList.add("arrastrando"); });
+    el.addEventListener("dragleave", () => el.classList.remove("arrastrando"));
+    el.addEventListener("drop", ev => {
+      ev.preventDefault();
+      el.classList.remove("arrastrando");
+      if (ev.dataTransfer.files[0]) recibir(s, ev.dataTransfer.files[0]);
+    });
+    r.appendChild(el);
+    pesoDe(s, el.querySelector("[data-met]"));
+  }
+}
+
+/* El peso del archivo actual. Desde file:// esto falla — no pasa nada, se
+   queda con el nombre de la sección. */
+async function pesoDe(s, destino) {
+  try {
+    const res = await fetch(s.archivo, { method: "HEAD" });
+    const n = Number(res.headers.get("content-length"));
+    if (n) destino.textContent = s.donde + " · " + kb(n);
+  } catch {}
+}
+
+function elegir(s) {
+  slotActivo = s;
+  const inp = $("#archivo");
+  inp.accept = s.video ? "video/mp4,video/quicktime" : "image/*";
+  inp.value = "";      // sin esto, elegir el mismo archivo dos veces no dispara change
+  inp.click();
+}
+
+$("#archivo").addEventListener("change", e => {
+  if (e.target.files[0] && slotActivo) recibir(slotActivo, e.target.files[0]);
+});
+
+function recibir(s, file) {
+  slotActivo = s;
+  (s.video ? prepararVideo : prepararImagen)(s, file).catch(ex => {
+    abrirHoja(s, `<div class="aviso mal">${ex.message}</div>`, false);
+  });
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   Imágenes: reducir y convertir
+   ══════════════════════════════════════════════════════════════════ */
+async function prepararImagen(s, file) {
+  if (!file.type.startsWith("image/")) {
+    throw new Error("Eso no es una foto. Elegí un archivo de imagen.");
+  }
+  abrirHoja(s, `<p style="text-align:center;padding:30px 0;color:rgba(2,33,30,.5)">
+    <span class="girando" style="border-color:rgba(2,33,30,.2);border-top-color:var(--green-deep)"></span>
+    &nbsp; Preparando la foto…</p>`, false);
+
+  const img = await cargarImagen(file);
+  const escala = Math.min(1, LADO_MAX / Math.max(img.width, img.height));
+  const w = Math.round(img.width * escala), h = Math.round(img.height * escala);
+
+  const c = document.createElement("canvas");
+  c.width = w; c.height = h;
+  const ctx = c.getContext("2d");
+  // Sin fondo blanco: el logo tiene transparencia y hay que conservarla.
+  ctx.drawImage(img, 0, 0, w, h);
+
+  const { blob, ext, aviso } = await aWebp(c, s);
+  const url = URL.createObjectURL(blob);
+
+  pendiente = { slot: s, blob, url, ext,
+    meta: { w, h, wOrig: img.width, hOrig: img.height, pesoOrig: file.size, peso: blob.size } };
+
+  mostrarPreviewImagen(s, aviso);
+}
+
+function cargarImagen(file) {
+  return new Promise((ok, mal) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => { URL.revokeObjectURL(url); ok(img); };
+    img.onerror = () => { URL.revokeObjectURL(url);
+      mal(new Error("No pude abrir esa foto. Si viene del iPhone en formato HEIC, mandátela por WhatsApp a vos mismo y usá la que llega — llega en JPG.")); };
+    img.src = url;
+  });
+}
+
+/* Safari viejo no sabe codificar WebP y toBlob NO avisa: devuelve un PNG con
+   la misma llamada. Una foto de iPhone así queda en 4-6 MB en vez de 200 KB.
+   Por eso se revisa blob.type y se cae a JPEG, que sí soporta todo el mundo. */
+function aWebp(canvas, s) {
+  return new Promise(ok => {
+    canvas.toBlob(b1 => {
+      if (b1 && b1.type === "image/webp") return ok({ blob: b1, ext: "webp", aviso: null });
+      canvas.toBlob(b2 => ok({
+        blob: b2, ext: "jpg",
+        aviso: s.alfa
+          ? "Este navegador no sabe guardar WebP, así que va en JPG — y el JPG no guarda transparencia. Para el logo, mejor hacelo desde la computadora."
+          : "Este navegador no sabe guardar WebP, así que va en JPG. Pesa un poco más pero se ve igual."
+      }), "image/jpeg", 0.82);
+    }, "image/webp", 0.82);
+  });
+}
+
+function mostrarPreviewImagen(s, aviso) {
+  const m = pendiente.meta;
+  const bajo = m.peso < m.pesoOrig;
+  abrirHoja(s, `
+    ${aviso ? `<div class="aviso mal">${aviso}</div>` : ""}
+    <div class="compara">
+      <figure><figcaption>Ahora</figcaption><img src="${s.archivo}" alt=""></figure>
+      <figure><figcaption>Nueva</figcaption><img src="${pendiente.url}" alt=""></figure>
+    </div>
+    <div class="datos">
+      <div><span>Tamaño</span><b>${m.wOrig}×${m.hOrig} → ${m.w}×${m.h}</b></div>
+      <div><span>Peso</span><b class="${bajo ? "baja" : ""}">${kb(m.pesoOrig)} → ${kb(m.peso)}${
+        bajo ? " (−" + Math.round(100 - m.peso / m.pesoOrig * 100) + "%)" : ""}</b></div>
+      <div><span>Formato</span><b>${pendiente.ext.toUpperCase()}</b></div>
+    </div>`, true);
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   Video: solo validar. Recodificar en el navegador no se puede.
+   ══════════════════════════════════════════════════════════════════ */
+async function prepararVideo(s, file) {
+  abrirHoja(s, `<p style="text-align:center;padding:30px 0;color:rgba(2,33,30,.5)">
+    <span class="girando" style="border-color:rgba(2,33,30,.2);border-top-color:var(--green-deep)"></span>
+    &nbsp; Revisando el video…</p>`, false);
+
+  const fallas = [];
+  if (file.size > VIDEO.pesoMax) {
+    fallas.push(`Pesa ${kb(file.size)} y el máximo es ${kb(VIDEO.pesoMax)}. Exportalo más liviano o más corto.`);
+  }
+
+  const codec = await codecDe(file);
+  if (codec === "hevc") {
+    fallas.push("Está en HEVC y hace falta H.264, que es el que reproducen todos los navegadores. " +
+      "En el iPhone: Ajustes → Cámara → Formatos → “Más compatible”, y volvé a exportarlo.");
+  }
+
+  let meta = null;
+  try {
+    meta = await metaVideo(file);
+    if (meta.dur > VIDEO.segMax) {
+      fallas.push(`Dura ${meta.dur.toFixed(0)} segundos y el máximo es ${VIDEO.segMax}.`);
+    }
+    if (meta.w < VIDEO.anchoMin) {
+      fallas.push(`Mide ${meta.w} de ancho. Con menos de ${VIDEO.anchoMin} se ve borroso en pantalla de computadora.`);
+    }
+    if (meta.h > meta.w) {
+      fallas.push("Está vertical. El hero lo muestra a lo ancho, así que un video vertical se estira y pierde nitidez.");
+    }
+  } catch {
+    fallas.push("Este navegador no pudo abrir el video, lo que casi siempre significa que el formato no sirve para la web. Tiene que ser MP4 con H.264.");
+  }
+
+  if (fallas.length) {
+    pendiente = null;
+    abrirHoja(s, `<div class="aviso mal"><b>No puedo publicar este video:</b>
+      <ul>${fallas.map(f => `<li>${f}</li>`).join("")}</ul></div>`, false);
+    return;
+  }
+
+  pendiente = { slot: s, blob: file, url: URL.createObjectURL(file), ext: "mp4",
+    meta: { ...meta, peso: file.size } };
+
+  abrirHoja(s, `
+    <div class="compara">
+      <figure><figcaption>Ahora</figcaption><video src="${s.archivo}" muted playsinline preload="metadata"></video></figure>
+      <figure><figcaption>Nuevo</figcaption><video src="${pendiente.url}" muted playsinline autoplay loop></video></figure>
+    </div>
+    <div class="datos">
+      <div><span>Tamaño</span><b>${meta.w}×${meta.h}</b></div>
+      <div><span>Duración</span><b>${meta.dur.toFixed(1)} s</b></div>
+      <div><span>Peso</span><b>${kb(file.size)}</b></div>
+    </div>
+    <div class="aviso ok">El audio no se puede revisar desde el navegador. El hero va en silencio de todos modos, así que si trae sonido no se va a escuchar.</div>`, true);
+}
+
+/* Con ciertos archivos el navegador no dispara ni loadedmetadata ni error:
+   se queda callado. Sin este límite la pantalla queda en "Revisando…" para
+   siempre y no hay forma de salir salvo cerrar. */
+function metaVideo(file) {
+  return new Promise((ok, mal) => {
+    const v = document.createElement("video");
+    v.preload = "metadata";
+    v.muted = true;
+    v.playsInline = true;
+    const url = URL.createObjectURL(file);
+    let listo = false;
+    const cerrar = () => { listo = true; URL.revokeObjectURL(url); v.removeAttribute("src"); v.load(); };
+    v.onloadedmetadata = () => {
+      if (listo) return;
+      const d = { w: v.videoWidth, h: v.videoHeight, dur: v.duration };
+      cerrar();
+      ok(d);
+    };
+    v.onerror = () => { if (listo) return; cerrar(); mal(new Error("no abre")); };
+    setTimeout(() => { if (!listo) { cerrar(); mal(new Error("tardo demasiado")); } }, 8000);
+    v.src = url;
+    // Safari en iOS a veces no carga los metadatos hasta que se lo pide
+    // explícitamente, aunque preload diga metadata.
+    v.load();
+  });
+}
+
+/* Safari en iPhone reproduce HEVC sin chistar, así que preguntarle al
+   navegador si puede no sirve para saber qué trae el archivo. Se buscan las
+   marcas de codec dentro del MP4: 'avc1' es H.264, 'hvc1'/'hev1' son HEVC.
+   Están en el moov, que suele venir al principio o al final; con leer los
+   primeros y los últimos 512 KB alcanza. */
+async function codecDe(file) {
+  const trozos = [file.slice(0, 512 * 1024)];
+  if (file.size > 1024 * 1024) trozos.push(file.slice(file.size - 512 * 1024));
+  for (const t of trozos) {
+    const txt = new TextDecoder("latin1").decode(await t.arrayBuffer());
+    if (txt.includes("avc1") || txt.includes("avc3")) return "h264";
+    if (txt.includes("hvc1") || txt.includes("hev1")) return "hevc";
+  }
+  return "desconocido";
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   Hoja y publicación
+   ══════════════════════════════════════════════════════════════════ */
+function abrirHoja(s, cuerpo, conPublicar) {
+  $("#hoja-cont").innerHTML = `
+    <h2>${s.nombre}</h2>
+    <p class="quien">${s.donde}</p>
+    ${cuerpo}
+    <div class="acciones">
+      ${conPublicar ? '<button class="btn btn-si" id="b-publicar">Publicar</button>' : ""}
+      <button class="btn btn-no" id="b-cerrar">${conPublicar ? "Cancelar" : "Cerrar"}</button>
+    </div>`;
+  $("#hoja").classList.add("visible");
+  $("#b-cerrar").addEventListener("click", cerrarHoja);
+  const p = $("#b-publicar");
+  if (p) p.addEventListener("click", publicar);
+}
+
+function cerrarHoja() {
+  $("#hoja").classList.remove("visible");
+  if (pendiente) URL.revokeObjectURL(pendiente.url);
+  pendiente = null;
+}
+
+async function publicar() {
+  if (!pendiente) return;
+  const btn = $("#b-publicar"), cancelar = $("#b-cerrar");
+  btn.disabled = cancelar.disabled = true;
+  btn.innerHTML = '<span class="girando"></span> Publicando…';
+  try {
+    const r = await window.API.publicarMedio({
+      slot: pendiente.slot.id, blob: pendiente.blob, ext: pendiente.ext
+    });
+    // La miniatura pasa a la foto nueva sin recargar.
+    const celda = document.querySelector(`.slot[data-id="${pendiente.slot.id}"] .mini`);
+    if (celda) celda.src = pendiente.url;
+    pendiente.slot.archivo = r.url;
+    pendiente = null;   // sin revocar: la url la sigue usando la miniatura
+    $("#hoja").classList.remove("visible");
+    brindis(window.API.simulado
+      ? "Listo (simulado, no se publicó nada)"
+      : "Publicado. En un minuto y medio se ve en la web.");
+  } catch (ex) {
+    const msg = {
+      sesion: "Se venció la sesión. Salí y volvé a entrar.",
+      slot: "Ese espacio no existe. Recargá la página.",
+      peso: "El archivo pesa demasiado para el servidor.",
+      commit: "No se pudo guardar, probablemente porque algo más cambió al mismo tiempo. Probá de nuevo."
+    }[ex.code] || ("No se pudo publicar: " + ex.message);
+    const aviso = document.createElement("div");
+    aviso.className = "aviso mal";
+    aviso.textContent = msg;
+    $("#hoja-cont").prepend(aviso);
+    btn.disabled = cancelar.disabled = false;
+    btn.textContent = "Reintentar";
+  }
+}
+
+let brindisT;
+function brindis(txt) {
+  const b = $("#brindis");
+  b.textContent = txt;
+  b.classList.add("visible");
+  clearTimeout(brindisT);
+  brindisT = setTimeout(() => b.classList.remove("visible"), 3600);
+}
+
+/* Si ya hay sesión abierta, saltarse el login. */
+(async () => {
+  try { if (await window.API.sesion()) abrirPanel(); } catch {}
+})();
+</script>
+</body>
+</html>
