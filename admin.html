@@ -250,21 +250,94 @@ let slotActivo = null;
    exista, el panel corre entero contra estos stubs: se puede probar el
    flujo completo sin backend. Codex reemplaza window.API y listo.
    ══════════════════════════════════════════════════════════════════ */
-window.API = window.API || {
-  simulado: true,
-  async entrar(correo, clave) {
-    await new Promise(r => setTimeout(r, 500));
-    if (!correo || !clave) throw Object.assign(new Error("Faltan datos"), { code: "datos" });
-    return { correo };
-  },
-  async salir() {},
-  async sesion() { return null; },
-  async publicarMedio({ slot, blob, ext }) {
-    await new Promise(r => setTimeout(r, 1200));
-    const hash = Math.random().toString(16).slice(2, 6);
-    return { url: `fotos/${slot}-${hash}.${ext}`, hash, commit: "simulado" };
+const SUPABASE_URL  = "https://fgikqdhopzyhmsyhxsui.supabase.co";
+const SUPABASE_ANON = "sb_publishable_Kz8lZKSg1ygjB_Ef6YkjWA_wOxYEAaY";
+
+/* Va con fetch pelado y no con la libreria de Supabase: son cuatro llamadas
+   y traerla de un CDN significaria volver a depender de un tercero, justo
+   despues de haber sacado a Google del sitio. */
+window.API = window.API || (() => {
+  const LLAVE = "atlantis-sesion";
+  let sesion = null;
+
+  try { sesion = JSON.parse(localStorage.getItem(LLAVE) || "null"); } catch {}
+
+  const guardar = s => {
+    sesion = s;
+    if (s) localStorage.setItem(LLAVE, JSON.stringify(s));
+    else localStorage.removeItem(LLAVE);
+  };
+
+  async function pedirToken(cuerpo, tipo) {
+    const r = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=${tipo}`, {
+      method: "POST",
+      headers: { apikey: SUPABASE_ANON, "Content-Type": "application/json" },
+      body: JSON.stringify(cuerpo)
+    });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) {
+      throw Object.assign(new Error(d.error_description || d.msg || "no se pudo entrar"),
+        { code: r.status === 400 ? "credenciales" : "red" });
+    }
+    return d;
   }
-};
+
+  /* El access_token dura una hora. Antes de cada publicacion se revisa y, si
+     esta por vencer, se renueva con el refresh_token: si no, subir una foto
+     grande justo al filo fallaba con la sesion vencida a mitad de camino. */
+  async function tokenVivo() {
+    if (!sesion) throw Object.assign(new Error("sin sesion"), { code: "SESSION_EXPIRED" });
+    if (Date.now() < sesion.vence - 120000) return sesion.access_token;
+    const d = await pedirToken({ refresh_token: sesion.refresh_token }, "refresh_token");
+    guardar({ access_token: d.access_token, refresh_token: d.refresh_token,
+              vence: Date.now() + d.expires_in * 1000, usuario: d.user });
+    return sesion.access_token;
+  }
+
+  return {
+    simulado: false,
+
+    async entrar(correo, clave) {
+      const d = await pedirToken({ email: correo, password: clave }, "password");
+      guardar({ access_token: d.access_token, refresh_token: d.refresh_token,
+                vence: Date.now() + d.expires_in * 1000, usuario: d.user });
+      return d.user;
+    },
+
+    async salir() {
+      try {
+        if (sesion) await fetch(`${SUPABASE_URL}/auth/v1/logout`, {
+          method: "POST",
+          headers: { apikey: SUPABASE_ANON, Authorization: `Bearer ${sesion.access_token}` }
+        });
+      } catch {}
+      guardar(null);
+    },
+
+    async sesion() {
+      if (!sesion) return null;
+      try { await tokenVivo(); return sesion.usuario; }
+      catch { guardar(null); return null; }
+    },
+
+    async publicarMedio({ slot, blob, ext }) {
+      const token = await tokenVivo();
+      const cuerpo = new FormData();
+      cuerpo.append("slot", slot);
+      cuerpo.append("file", blob, `${slot}.${ext}`);
+      const r = await fetch(`${SUPABASE_URL}/functions/v1/publicar-media`, {
+        method: "POST",
+        headers: { apikey: SUPABASE_ANON, Authorization: `Bearer ${token}` },
+        body: cuerpo   // sin Content-Type: lo pone el navegador con su boundary
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok || !d.ok) {
+        throw Object.assign(new Error(d.message || `error ${r.status}`), { code: d.code || "GITHUB_ERROR" });
+      }
+      return { url: d.path, hash: d.hash, commit: d.commit };
+    }
+  };
+})();
 
 /* ══════════════════════════════════════════════════════════════════
    Login
@@ -662,11 +735,18 @@ async function publicar() {
       ? "Listo (simulado, no se publicó nada)"
       : "Publicado. En un minuto y medio se ve en la web.") + avisoPortada);
   } catch (ex) {
+    // Los códigos en mayúscula son los que devuelve la Edge Function.
     const msg = {
-      sesion: "Se venció la sesión. Salí y volvé a entrar.",
-      slot: "Ese espacio no existe. Recargá la página.",
-      peso: "El archivo pesa demasiado para el servidor.",
-      commit: "No se pudo guardar, probablemente porque algo más cambió al mismo tiempo. Probá de nuevo."
+      SESSION_EXPIRED: "Se venció la sesión. Salí y volvé a entrar.",
+      FORBIDDEN:       "Ese usuario no tiene permiso para publicar.",
+      INVALID_SLOT:    "Ese espacio no existe. Recargá la página.",
+      INVALID_TYPE:    "El servidor no reconoció el archivo. Probá con otra foto.",
+      FILE_TOO_LARGE:  "El archivo pesa demasiado para el servidor.",
+      CONFLICT:        "Algo más cambió el sitio al mismo tiempo. Probá de nuevo.",
+      GITHUB_ERROR:    "No se pudo guardar en el sitio. Probá de nuevo en un minuto.",
+      CONFIG_ERROR:    "Al servidor le falta configuración. Avisale a quien lo instaló.",
+      BAD_REQUEST:     "La petición salió mal armada. Recargá la página.",
+      red:             "Sin conexión con el servidor."
     }[ex.code] || ("No se pudo publicar: " + ex.message);
     const aviso = document.createElement("div");
     aviso.className = "aviso mal";
