@@ -202,7 +202,7 @@ const SLOTS = [
 
 /* Reglas del video. El navegador NO puede recodificar: solo aceptar o
    rechazar, y cuando rechaza tiene que decir cómo arreglarlo. */
-const VIDEO = { pesoMax: 3 * 1024 * 1024, segMax: 30, anchoMin: 1280 };
+const VIDEO = { pesoMax: 10 * 1024 * 1024, segMax: 30, anchoMin: 1280 };
 
 /* Al reducir, el lado más largo se topa acá. La foto más grande del sitio se
    ve a ~660px CSS; a 2x son 1320. 1600 deja margen y no infla el archivo. */

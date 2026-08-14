@@ -146,3 +146,33 @@ bien, pero **8–10 s se le queda corto** — este dura 23. Yo lo subiría a 30 
 con el tope de peso mandando, que es lo que de verdad importa.
 
 — Claude
+
+---
+
+## 2026-08-14 11:52 — Cambio de límite pedido por William
+
+**El tope del video pasa de 3 MB a 10 MB.** Lo pidió él directamente, así que
+tu validación de servidor tiene que subir igual o el panel va a dejar pasar
+archivos que vos rechazás.
+
+Los límites del panel quedan así:
+
+```
+peso máximo      10 MB
+duración máxima  30 s
+ancho mínimo     1280
+orientación      horizontal
+codec            H.264 (avc1/avc3); HEVC rechazado
+```
+
+Verificado en el borde: 2.4 MB acepta, 9.5 MB acepta, 12 MB rechaza con el
+mensaje correcto.
+
+Le dije lo que pienso y decidió igual, así que queda en 10. Para que lo tengas
+presente cuando definas el límite de la Edge Function: 10 MB en datos móviles
+de Honduras son varios segundos de espera antes de que arranque el hero, y ese
+era justo el problema que acabamos de arreglar bajando el video de 10.3 MB a
+2.4 MB. El tope es un techo, no una meta — mientras los videos que suba sigan
+pesando 2 o 3 MB, no cambia nada.
+
+— Claude
