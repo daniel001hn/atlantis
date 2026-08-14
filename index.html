@@ -23,7 +23,7 @@
   img-src 'self' data:;
   media-src 'self';
   font-src 'self';
-  connect-src 'self';
+  connect-src 'self' https://fgikqdhopzyhmsyhxsui.supabase.co;
   object-src 'none';
   base-uri 'self';
   form-action 'self'">
@@ -1078,6 +1078,87 @@ function airbnbURL(id, llegada, salida, adultos) {
   return `https://www.airbnb.com/rooms/${id}${q ? "?" + q : ""}`;
 }
 
+/* =====================================================================
+   ÚLTIMA VERIFICACIÓN ANTES DE MANDAR A AIRBNB
+
+   El calendario se regenera cada 35 minutos. En esa ventana una unidad puede
+   ocuparse, y sin esto la persona llega a Airbnb y se encuentra con que no hay
+   lugar — la peor impresión posible, justo al momento de pagar.
+
+   Se consulta UNA sola unidad, la asignada, una sola vez. No las 12: eso nos
+   haría bloquear por Airbnb, y ahí se muere el calendario entero.
+
+   ANTE LA DUDA, DEJAR PASAR. Si el servidor no responde, si tarda, o si el
+   endpoint todavía no existe, se abre Airbnb igual. Un falso "ocupado" cuesta
+   una reserva real; un falso "libre" es exactamente lo que pasa hoy.
+   ===================================================================== */
+const VERIFICAR = "https://fgikqdhopzyhmsyhxsui.supabase.co/functions/v1/verificar-fechas";
+const VERIFICAR_KEY = "sb_publishable_Kz8lZKSg1ygjB_Ef6YkjWA_wOxYEAaY";
+const ESPERA_MAX = 3000;
+
+async function alReservar(ev) {
+  const a = ev.currentTarget;
+  ev.preventDefault();
+
+  /* La ventana se abre AHORA, dentro del clic. Si se abriera después de
+     esperar la respuesta, el navegador la trataría como emergente y la
+     bloquearía. Se abre vacía y se le pone el destino al terminar. */
+  const ventana = window.open("", "_blank");
+
+  const irAAirbnb = () => {
+    if (ventana && !ventana.closed) ventana.location = a.href;
+    else window.location.href = a.href;   // si igual la bloquearon, misma pestaña
+  };
+
+  const textoOriginal = a.textContent;
+  a.textContent = "Verificando…";
+  a.style.pointerEvents = "none";
+
+  try {
+    const corte = new AbortController();
+    setTimeout(() => corte.abort(), ESPERA_MAX);
+
+    const consulta = (async () => {
+      const r = await fetch(VERIFICAR, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", apikey: VERIFICAR_KEY },
+        body: JSON.stringify({
+          unidad: a.dataset.unidad, llegada: a.dataset.in, salida: a.dataset.out
+        }),
+        signal: corte.signal
+      });
+      return r.json();
+    })();
+
+    /* Carrera contra un reloj propio, además del AbortController. El abort
+       depende de que el navegador cancele el pedido; esto no depende de nadie.
+       Si algo se cuelga, a los 3 segundos igual se abre Airbnb y la persona
+       nunca queda mirando un "Verificando…" eterno. */
+    const d = await Promise.race([
+      consulta,
+      new Promise(listo => setTimeout(() => listo(null), ESPERA_MAX))
+    ]);
+
+    /* Solo se frena con un "no" explícito. Cualquier otra cosa deja pasar. */
+    if (d && d.ok === true && d.libre === false) {
+      if (ventana && !ventana.closed) ventana.close();
+      document.getElementById("veredicto").innerHTML = `<div class="veredicto no">
+        Disculpa las molestias, estas fechas se encuentran ocupadas.
+        Si gustas puedes contactarnos para reservar.
+        <div class="veredicto-btns">
+          <a class="btn wa" href="${a.dataset.wa}" target="_blank" rel="noopener">Contactarnos por WhatsApp</a>
+        </div></div>`;
+      return;
+    }
+    irAAirbnb();
+  } catch {
+    irAAirbnb();   // sin conexión, se acabó el tiempo, o el endpoint no existe
+  } finally {
+    a.textContent = textoOriginal;
+    a.style.pointerEvents = "";
+  }
+}
+
 function whatsappURL(llegada, salida, unidad) {
   let msg = "Hola, quisiera consultar disponibilidad en Atlantis Villages";
   if (unidad) msg += ` para ${unidad}`;
@@ -1280,9 +1361,13 @@ function veredicto() {
       <b>Disponible</b> — ${calVilla.nombre}, ${noches} ${noches === 1 ? "noche" : "noches"}, del ${selIn} al ${selOut}.${quedan}
       ${total > 1 ? `<br>Te asignamos <b>${u.nombre}</b>.` : ""}
       <div class="veredicto-btns">
-        <a class="btn ab" href="${airbnbURL(u.id, selIn, selOut)}" target="_blank" rel="noopener">Reservar en Airbnb</a>
+        <a class="btn ab" id="btn-airbnb" href="${airbnbURL(u.id, selIn, selOut)}"
+           data-unidad="${u.id}" data-in="${selIn}" data-out="${selOut}" data-wa="${waReserva}"
+           target="_blank" rel="noopener">Reservar en Airbnb</a>
         <a class="btn wa" href="${waReserva}" target="_blank" rel="noopener">Reservar por WhatsApp</a>
       </div></div>`;
+    const bAirbnb = document.getElementById("btn-airbnb");
+    if (bAirbnb) bAirbnb.addEventListener("click", alReservar);
   } else {
     vd.innerHTML = `<div class="veredicto no">
       <b>No hay disponibilidad</b> — ${total > 1 ? `las ${total} unidades de ${calVilla.nombre} están` : `${calVilla.nombre} está`} tomada${total > 1 ? "s" : ""} del ${selIn} al ${selOut}. Probá otras fechas.<br>
