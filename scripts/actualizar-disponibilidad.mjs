@@ -94,6 +94,33 @@ for (const [id, url] of Object.entries(URLS)) {
   await dormir(500);
 }
 
+/* Las unidades que ya estaban y que este secret no menciona NO se borran.
+ *
+ * Antes desaparecian sin dejar rastro: alguien agregaba un .ics en
+ * unidades.local.json, se olvidaba de actualizar el secret ICS_URLS, y la
+ * siguiente corrida del cron dejaba disponibilidad.js con menos unidades que
+ * antes. Sin error y sin aviso. Paso dos veces en un mismo dia.
+ *
+ * Conservarlas es lo seguro. Un calendario viejo, en el peor caso, muestra
+ * ocupado algo que se libero. Uno que desaparecio hace que el sitio calcule
+ * el tipo entero como si esa unidad estuviera siempre libre, y ahi si se
+ * manda gente a fechas ya tomadas.
+ *
+ * Para dar de baja una unidad de verdad hay que sacarla de VILLAS en
+ * index.html, que es de donde sale lo que se muestra. */
+const heredadas = [];
+for (const [id, dias] of Object.entries(previo.unidades ?? {})) {
+  if (!(id in unidades)) {
+    unidades[id] = dias;
+    heredadas.push(id);
+  }
+}
+if (heredadas.length) {
+  console.log("\nNo venian en el secret. Se conservan como estaban:");
+  for (const id of heredadas) console.log(`  ${id}  ${unidades[id].length} dias`);
+  console.log("Si son unidades nuevas, falta agregarlas al secret ICS_URLS.");
+}
+
 if (ok === 0) {
   console.error("\nNinguna unidad respondio. No se toca disponibilidad.js.");
   process.exit(1);
