@@ -549,7 +549,33 @@ footer{background:var(--ink);padding:56px 20px}
 
   <!-- ============ HERO ============ -->
   <section class="hero">
-    <video src="fotos/hero.mp4" poster="fotos/hero-poster.webp" autoplay muted loop playsinline preload="metadata"></video>
+    <video id="hero-video" poster="fotos/hero-poster.webp" autoplay muted loop playsinline preload="metadata"></video>
+    <script>
+    /* Dos videos, uno por forma de pantalla.
+       El hero usa object-fit:cover, así que el video se recorta para llenar.
+       Con el horizontal en un iPhone (390x844) solo se ve el 26% del ancho:
+       una tira angosta del centro. Con el vertical se ve entero.
+
+       Se decide por FORMA de la ventana, no por ancho: un teléfono acostado
+       es horizontal y le toca el horizontal, que es lo correcto.
+
+       Va en JS y no con <source media="...">: Chrome ignora ese atributo
+       dentro de <video> (en <picture> sí funciona, en <video> no), así que
+       ahí se bajaría siempre el primero. Este script está pegado al elemento
+       a propósito — corre antes de que el navegador empiece a descargar, y
+       así nunca se baja el que no se va a usar. */
+    (function () {
+      var v = document.getElementById("hero-video");
+      if (!v) return;
+      var vertical = matchMedia("(max-aspect-ratio: 1/1)").matches;
+      if (vertical) {
+        v.poster = "fotos/hero-poster-vertical.webp";
+        v.src = "fotos/hero-vertical.mp4";
+      } else {
+        v.src = "fotos/hero.mp4";
+      }
+    })();
+    </script>
     <div class="scrim"></div>
     <div class="hero-in">
       <p class="eyebrow">Playa Bonita · Tela, Honduras</p>
