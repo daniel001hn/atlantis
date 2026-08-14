@@ -146,8 +146,13 @@ button{font-family:inherit;font-size:1rem;cursor:pointer}
     <h1>Atlantis Villages</h1>
     <p class="sub">Panel de fotos</p>
     <form id="f-login">
-      <label for="correo">Correo</label>
-      <input id="correo" type="email" autocomplete="username" required inputmode="email">
+      <!-- Pide usuario, no correo. El dominio se lo pega el JS: Supabase Auth
+           necesita algo con forma de email, pero nadie tiene que verlo.
+           type="text" y no "email" a proposito: con "email" el navegador
+           rechaza "admin" por no tener arroba. -->
+      <label for="usuario">Usuario</label>
+      <input id="usuario" type="text" autocomplete="username" required
+             autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="admin">
       <label for="clave">Contraseña</label>
       <input id="clave" type="password" autocomplete="current-password" required>
       <div id="login-error" class="aviso mal" style="display:none;margin-top:16px"></div>
@@ -225,6 +230,13 @@ const VIDEO = { pesoMax: 10 * 1024 * 1024, segMax: 30 };
    ve a ~660px CSS; a 2x son 1320. 1600 deja margen y no infla el archivo. */
 const LADO_MAX = 1600;
 
+/* Mismo esquema que Stefany: la persona escribe solo el usuario y el codigo le
+   pega el dominio. Supabase Auth guarda un correo porque lo necesita, pero no
+   existe ni se manda nada a esa direccion.
+   Sin usuario -> admin, que es el de siempre. */
+const DOMINIO = "@atlantis.local";
+const correoDe = u => (u.trim().toLowerCase() || "admin") + DOMINIO;
+
 const $  = s => document.querySelector(s);
 const kb = n => n < 1024 * 1024 ? Math.round(n / 1024) + " KB"
                                 : (n / 1024 / 1024).toFixed(1) + " MB";
@@ -265,11 +277,11 @@ $("#f-login").addEventListener("submit", async e => {
   btn.disabled = true;
   btn.innerHTML = '<span class="girando"></span> Entrando…';
   try {
-    await window.API.entrar($("#correo").value.trim(), $("#clave").value);
+    await window.API.entrar(correoDe($("#usuario").value), $("#clave").value);
     abrirPanel();
   } catch (ex) {
     err.textContent = ex.code === "credenciales"
-      ? "Correo o contraseña incorrectos."
+      ? "Usuario o contraseña incorrectos."
       : "No se pudo entrar: " + ex.message;
     err.style.display = "";
   } finally {
