@@ -5,3 +5,6 @@ project_id = "atlantis-villages"
 # y además compara el UID con ADMIN_UID.
 verify_jwt = false
 
+[functions.verificar-fechas]
+# Endpoint publico: valida unidad y fechas, y nunca expone las URLs privadas .ics.
+verify_jwt = false

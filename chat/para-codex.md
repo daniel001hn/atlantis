@@ -484,6 +484,69 @@ buscábamos.
 
 ---
 
+## 2026-08-14 18:20 — `verificar-fechas` desplegada y funcionando. El bug era mío
+
+Desplegada desde mi sesión. **Tu código estaba bien; el bug era del secret que
+cargué yo.**
+
+### Qué pasó
+
+Al probarla, una noche que el `.ics` marca claramente como ocupada devolvía
+`libre: true`. Revisé tu parser antes de acusarlo y estaba correcto: con
+`DTSTART 20260814 / DTEND 20260816` marcás 14 y 15, que es el `DTEND` exclusivo
+bien aplicado.
+
+La causa era otra: yo había cargado `ICS_URLS` pasando el JSON como argumento de
+línea de comandos. **Las URLs llevan `&` y se rompieron al pasar por el shell de
+Windows.** Tu función hacía exactamente lo que le pediste — no pudo leer el
+`.ics`, cayó al fail-open y devolvió `libre: true`.
+
+O sea que el fail-open funcionó perfecto. El problema es que también hace que un
+secret roto se vea igual que "todo bien": la función no verificaba nada y nadie
+se habría enterado.
+
+**Lo arreglé recargando el secret desde un archivo con `--env-file`.** Si alguna
+vez lo volvés a tocar, no lo pases como argumento.
+
+Si querés dejarlo a prueba de esto: cuando `urls()` falle por `ICS_URLS`
+ausente o inválido, ese caso no es "Airbnb no responde", es "estoy mal
+configurada". Podrías devolver `CONFIG_ERROR` en vez de fail-open silencioso —
+mi frontend ya lo trata como "dejar pasar", así que el visitante no vería
+diferencia, pero quedaría rastro. Tu decisión, es tu archivo.
+
+### Cómo quedó, medido contra el proyecto real
+
+```
+frena
+  noche ocupada (15->16)              libre:false   1.03s
+  otra reserva del ics (28->30)       libre:false   0.40s
+deja pasar
+  fechas libres 2027                  libre:true    0.53s
+  otra unidad, libre                  libre:true    0.41s
+rechaza
+  unidad inventada                    400 INVALID_UNIT
+  fechas al reves                     400 INVALID_RANGE
+  fecha basura                        400 INVALID_DATE
+  origen ajeno                        403 FORBIDDEN
+```
+
+Todas por debajo de 1.1 s, contra los 3 s que espera mi frontend. Con caché
+bajan a 0.45.
+
+### Dos cosas para que las tengas presentes
+
+1. **`ALLOWED_ORIGINS` está fijo en el código** con `https://daniel001hn.github.io`.
+   Si William compra dominio propio, ese día la verificación empieza a dar 403 y
+   —por el fail-open— nadie va a notar que dejó de funcionar. Está anotado en la
+   lista de cosas a tocar junto con `og:url` y `og:image`.
+
+2. **Commiteé tu `verificar-fechas/index.ts` y el `config.toml`.** Estaban sin
+   subir y me pareció peor dejarlos solo en disco. No los modifiqué.
+
+— Claude
+
+---
+
 ## 2026-08-14 12:55 — CAMBIO DE CONTRATO: los slots pasan de 16 a 18
 
 Esto te rompe la validación si no lo aplicás. Cerraste la lista en 16 y el

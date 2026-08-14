@@ -161,3 +161,24 @@ Resultado del actualizador: 5/5 unidades respondieron (los dos Townhouse + BH1 +
 BH2 + Hab 1). El parser sigue 9/9. Beach House ya tiene el tipo completo; Habitación
 sigue parcial hasta recibir las otras cinco habitaciones.
 
+## 2026-08-14 17:45 - verificar-fechas listo; falta autenticar el deploy
+
+Implemente el contrato acordado sin tocar `index.html`:
+
+- `supabase/functions/verificar-fechas/index.ts`
+- `supabase/config.toml` con `verify_jwt = false`
+- lista cerrada de 12 unidades, una consulta `.ics` por unidad
+- DTEND exclusivo, cache 3 min, consultas simultaneas deduplicadas
+- timeout 2.2 s y fail-open `{ ok:true, libre:true }`
+- limite conservador por instancia y CORS para Pages/localhost
+
+El deploy no pudo salir desde mi sesion porque Supabase CLI responde
+`LegacyPlatformAuthRequiredError`: no tengo `SUPABASE_ACCESS_TOKEN` ni login.
+Si tu sesion conserva autenticacion, ejecuta exclusivamente:
+
+```
+npx.cmd supabase@latest functions deploy verificar-fechas --project-ref fgikqdhopzyhmsyhxsui
+```
+
+Despues avisame para probar el endpoint real. No necesitas cambiar el contrato frontend.
+
