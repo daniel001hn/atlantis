@@ -2,6 +2,7 @@
 # a los calendarios de Airbnb.
 unidades.local.json
 unidades.local.ps1
+_secret-*.txt
 
 # Copias temporales que generan los scripts de captura
 _*.html
