@@ -85,10 +85,11 @@ button{font-family:inherit;font-size:1rem;cursor:pointer}
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .slot .met{font-size:.7rem;color:rgba(2,33,30,.45);display:block;margin-top:1px}
 .slot .et{
-  display:inline-block;margin-top:6px;font-size:.64rem;letter-spacing:.06em;
+  display:inline-block;margin-top:6px;margin-right:4px;font-size:.64rem;letter-spacing:.06em;
   text-transform:uppercase;padding:2px 7px;border-radius:20px;
   background:rgba(91,200,200,.22);color:var(--green-deep);
 }
+.slot .et.auto{background:rgba(2,33,30,.07);color:rgba(2,33,30,.5)}
 
 /* ---------- hoja de preview ---------- */
 #hoja{
@@ -121,6 +122,7 @@ button{font-family:inherit;font-size:1rem;cursor:pointer}
 
 .aviso{border-radius:10px;padding:12px 14px;font-size:.86rem;margin-bottom:16px}
 .aviso.mal{background:rgba(194,51,77,.09);color:#8a2436}
+.aviso.ojo{background:rgba(214,150,20,.12);color:#8a6410}
 .aviso.ok{background:rgba(26,127,90,.1);color:var(--ok)}
 .aviso ul{margin:8px 0 0;padding-left:18px}
 .aviso li{margin:3px 0}
@@ -196,13 +198,28 @@ const SLOTS = [
   { id:"lancetilla",        nombre:"Lancetilla",         archivo:"fotos/lancetilla.webp",        donde:"Cerca de acá" },
   { id:"punta-sal",         nombre:"Punta Sal",          archivo:"fotos/punta-sal.webp",         donde:"Cerca de acá" },
   { id:"logo",              nombre:"Logo",               archivo:"fotos/logo.png",               donde:"Marca", alfa:true },
-  { id:"hero-poster",       nombre:"Portada del video",  archivo:"fotos/hero-poster.webp",       donde:"Hero" },
-  { id:"hero-video",        nombre:"Video del hero",     archivo:"fotos/hero.mp4",               donde:"Hero", video:true }
+
+  /* El hero usa CUATRO archivos, no uno. En un teléfono parado se muestra el
+     vertical y en el resto el horizontal — el horizontal en un iPhone dejaba
+     ver solo el 26% del ancho. Cada video tiene su portada, que es lo que se
+     ve mientras carga. */
+  /* Dos umbrales, no uno. anchoMin rechaza lo que no sirve; anchoIdeal solo
+     avisa. Con un único mínimo alto, el vertical que está publicado hoy (576px,
+     salió así porque pasó por WhatsApp) no pasaría su propia validación, y
+     rechazar el archivo que ya está en el aire no tiene sentido. */
+  { id:"hero-video",        nombre:"Video · computadora", archivo:"fotos/hero.mp4",                 donde:"Hero", video:true,
+    orientacion:"horizontal", anchoMin:854, anchoIdeal:1280, poster:"hero-poster" },
+  { id:"hero-video-movil",  nombre:"Video · celular",     archivo:"fotos/hero-vertical.mp4",        donde:"Hero", video:true,
+    orientacion:"vertical",   anchoMin:480, anchoIdeal:1000, poster:"hero-poster-movil" },
+  { id:"hero-poster",       nombre:"Portada · computadora", archivo:"fotos/hero-poster.webp",       donde:"Hero", auto:true },
+  { id:"hero-poster-movil", nombre:"Portada · celular",     archivo:"fotos/hero-poster-vertical.webp", donde:"Hero", auto:true }
 ];
 
 /* Reglas del video. El navegador NO puede recodificar: solo aceptar o
-   rechazar, y cuando rechaza tiene que decir cómo arreglarlo. */
-const VIDEO = { pesoMax: 10 * 1024 * 1024, segMax: 30, anchoMin: 1280 };
+   rechazar, y cuando rechaza tiene que decir cómo arreglarlo.
+   La orientación y el ancho mínimo salen de cada slot: el de computadora tiene
+   que ser horizontal, el de celular vertical, y no se pueden confundir. */
+const VIDEO = { pesoMax: 10 * 1024 * 1024, segMax: 30 };
 
 /* Al reducir, el lado más largo se topa acá. La foto más grande del sitio se
    ve a ~660px CSS; a 2x son 1320. 1600 deja margen y no infla el archivo. */
@@ -294,7 +311,8 @@ function dibujarRejilla() {
       <div class="pie">
         <span class="nom">${s.nombre}</span>
         <span class="met" data-met>${s.donde}</span>
-        ${s.video ? '<span class="et">video</span>' : ""}
+        ${s.video ? `<span class="et">video ${s.orientacion === "vertical" ? "vertical" : "horizontal"}</span>` : ""}
+        ${s.auto ? '<span class="et auto">se genera sola</span>' : ""}
       </div>`;
     el.addEventListener("click", () => elegir(s));
     // Arrastrar y soltar, para cuando se usa desde la compu.
@@ -422,7 +440,8 @@ async function prepararVideo(s, file) {
     <span class="girando" style="border-color:rgba(2,33,30,.2);border-top-color:var(--green-deep)"></span>
     &nbsp; Revisando el video…</p>`, false);
 
-  const fallas = [];
+  const fallas = [];   // impiden publicar
+  const avisos = [];   // se pueden publicar igual, pero conviene saberlo
   if (file.size > VIDEO.pesoMax) {
     fallas.push(`Pesa ${kb(file.size)} y el máximo es ${kb(VIDEO.pesoMax)}. Exportalo más liviano o más corto.`);
   }
@@ -439,11 +458,25 @@ async function prepararVideo(s, file) {
     if (meta.dur > VIDEO.segMax) {
       fallas.push(`Dura ${meta.dur.toFixed(0)} segundos y el máximo es ${VIDEO.segMax}.`);
     }
-    if (meta.w < VIDEO.anchoMin) {
-      fallas.push(`Mide ${meta.w} de ancho. Con menos de ${VIDEO.anchoMin} se ve borroso en pantalla de computadora.`);
+    if (meta.w < s.anchoMin) {
+      fallas.push(`Mide ${meta.w} de ancho, que es demasiado poco para usarlo. Hacen falta ${s.anchoMin} como mínimo.`);
+    } else if (meta.w < s.anchoIdeal) {
+      // Avisa pero deja publicar: es peor calidad, no está roto.
+      avisos.push(`Mide ${meta.w} de ancho. Lo ideal son ${s.anchoIdeal} o más — con menos se ve blando. ` +
+        (s.orientacion === "vertical"
+          ? "Si te lo mandaron por WhatsApp, ahí se achica solo: pedilo por AirDrop, correo o Drive y se ve mucho mejor."
+          : "Se puede publicar igual, pero en pantalla grande se nota."));
     }
-    if (meta.h > meta.w) {
-      fallas.push("Está vertical. El hero lo muestra a lo ancho, así que un video vertical se estira y pierde nitidez.");
+    // Cada slot tiene su forma y no se pueden cruzar: el vertical en el espacio
+    // de computadora se ve como una tira, y al revés igual.
+    const esVertical = meta.h > meta.w;
+    if (s.orientacion === "horizontal" && esVertical) {
+      fallas.push("Está vertical y este espacio es el de computadora, que lo muestra a lo ancho. " +
+        "Si querés usarlo en el teléfono, va en “Video · celular”.");
+    }
+    if (s.orientacion === "vertical" && !esVertical) {
+      fallas.push("Está horizontal y este espacio es el del teléfono, que lo muestra a lo alto. " +
+        "Si querés usarlo en la computadora, va en “Video · computadora”.");
     }
   } catch {
     fallas.push("Este navegador no pudo abrir el video, lo que casi siempre significa que el formato no sirve para la web. Tiene que ser MP4 con H.264.");
@@ -460,6 +493,8 @@ async function prepararVideo(s, file) {
     meta: { ...meta, peso: file.size } };
 
   abrirHoja(s, `
+    ${avisos.length ? `<div class="aviso ojo"><b>Se puede publicar, pero ojo:</b>
+      <ul>${avisos.map(a => `<li>${a}</li>`).join("")}</ul></div>` : ""}
     <div class="compara">
       <figure><figcaption>Ahora</figcaption><video src="${s.archivo}" muted playsinline preload="metadata"></video></figure>
       <figure><figcaption>Nuevo</figcaption><video src="${pendiente.url}" muted playsinline autoplay loop></video></figure>
@@ -469,7 +504,8 @@ async function prepararVideo(s, file) {
       <div><span>Duración</span><b>${meta.dur.toFixed(1)} s</b></div>
       <div><span>Peso</span><b>${kb(file.size)}</b></div>
     </div>
-    <div class="aviso ok">El audio no se puede revisar desde el navegador. El hero va en silencio de todos modos, así que si trae sonido no se va a escuchar.</div>`, true);
+    <div class="aviso ok">La portada se genera sola del primer cuadro de este video.
+      El audio no se puede revisar desde el navegador, pero el hero va en silencio igual.</div>`, true);
 }
 
 /* Con ciertos archivos el navegador no dispara ni loadedmetadata ni error:
@@ -539,24 +575,80 @@ function cerrarHoja() {
   pendiente = null;
 }
 
+/* Saca el primer cuadro del video para usarlo de portada.
+   Se usa el segundo 0 y no uno más adelante: la portada es lo que se ve
+   mientras el video carga, así que si no es exactamente el primer cuadro se
+   nota un salto al arrancar. */
+async function posterDeVideo(blob) {
+  const v = document.createElement("video");
+  v.muted = true;
+  v.playsInline = true;
+  const url = URL.createObjectURL(blob);
+  try {
+    await new Promise((ok, mal) => {
+      v.onloadeddata = ok;
+      v.onerror = () => mal(new Error("no se pudo leer el video"));
+      setTimeout(() => mal(new Error("el video tardó demasiado")), 8000);
+      v.src = url;
+      v.load();
+    });
+    v.currentTime = 0;
+    await new Promise(ok => { v.onseeked = ok; setTimeout(ok, 1200); });
+    const c = document.createElement("canvas");
+    c.width = v.videoWidth;
+    c.height = v.videoHeight;
+    c.getContext("2d").drawImage(v, 0, 0);
+    return await new Promise(ok => {
+      c.toBlob(b1 => {
+        if (b1 && b1.type === "image/webp") return ok({ blob: b1, ext: "webp" });
+        c.toBlob(b2 => ok({ blob: b2, ext: "jpg" }), "image/jpeg", .82);
+      }, "image/webp", .78);
+    });
+  } finally {
+    URL.revokeObjectURL(url);
+  }
+}
+
 async function publicar() {
   if (!pendiente) return;
   const btn = $("#b-publicar"), cancelar = $("#b-cerrar");
+  const p = pendiente;
   btn.disabled = cancelar.disabled = true;
   btn.innerHTML = '<span class="girando"></span> Publicando…';
   try {
-    const r = await window.API.publicarMedio({
-      slot: pendiente.slot.id, blob: pendiente.blob, ext: pendiente.ext
-    });
-    // La miniatura pasa a la foto nueva sin recargar.
-    const celda = document.querySelector(`.slot[data-id="${pendiente.slot.id}"] .mini`);
-    if (celda) celda.src = pendiente.url;
-    pendiente.slot.archivo = r.url;
-    pendiente = null;   // sin revocar: la url la sigue usando la miniatura
+    const r = await window.API.publicarMedio({ slot: p.slot.id, blob: p.blob, ext: p.ext });
+    // La miniatura pasa a la nueva sin recargar la página.
+    const celda = document.querySelector(`.slot[data-id="${p.slot.id}"] .mini`);
+    if (celda) celda.src = p.url;
+    p.slot.archivo = r.url;
+
+    /* Si es un video del hero, su portada se regenera sola. Dejarla a mano es
+       pedir que algún día quede la portada de un video que ya no existe. */
+    let avisoPortada = "";
+    if (p.slot.poster) {
+      btn.innerHTML = '<span class="girando"></span> Generando la portada…';
+      const destino = SLOTS.find(s => s.id === p.slot.poster);
+      try {
+        const port = await posterDeVideo(p.blob);
+        const rp = await window.API.publicarMedio({
+          slot: p.slot.poster, blob: port.blob, ext: port.ext
+        });
+        if (destino) {
+          destino.archivo = rp.url;
+          const cp = document.querySelector(`.slot[data-id="${p.slot.poster}"] .mini`);
+          if (cp) cp.src = URL.createObjectURL(port.blob);
+        }
+      } catch (e) {
+        // El video sí quedó publicado: no es para tirar todo abajo.
+        avisoPortada = " La portada no se pudo generar sola, cambiala a mano.";
+      }
+    }
+
+    pendiente = null;   // sin revocar la url: la sigue usando la miniatura
     $("#hoja").classList.remove("visible");
-    brindis(window.API.simulado
+    brindis((window.API.simulado
       ? "Listo (simulado, no se publicó nada)"
-      : "Publicado. En un minuto y medio se ve en la web.");
+      : "Publicado. En un minuto y medio se ve en la web.") + avisoPortada);
   } catch (ex) {
     const msg = {
       sesion: "Se venció la sesión. Salí y volvé a entrar.",

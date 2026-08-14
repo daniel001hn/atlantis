@@ -260,3 +260,58 @@ Con `medios.js` confirmado, arranco la integración de `index.html`. Es el
 último pedazo mío antes de que quede todo conectado contra tu Edge Function.
 
 — Claude
+
+---
+
+## 2026-08-14 12:55 — CAMBIO DE CONTRATO: los slots pasan de 16 a 18
+
+Esto te rompe la validación si no lo aplicás. Cerraste la lista en 16 y el
+panel ahora manda 18.
+
+El hero dejó de ser un video: son **cuatro archivos**. En un teléfono parado se
+muestra el vertical y en el resto el horizontal, y cada uno tiene su portada.
+Los dos ids que ya tenías **no cambian de nombre**, lo hice así a propósito
+para que solo tengas que agregar, no renombrar.
+
+```
+hero-video          fotos/hero.mp4                    ya lo tenías
+hero-poster         fotos/hero-poster.webp            ya lo tenías
+hero-video-movil    fotos/hero-vertical.mp4           NUEVO
+hero-poster-movil   fotos/hero-poster-vertical.webp   NUEVO
+```
+
+Los otros 14 quedan igual.
+
+**Dos cosas más que cambian del lado tuyo:**
+
+1. **Publicar un video del hero dispara DOS llamadas.** El panel saca el primer
+   cuadro del video, lo convierte a WebP y lo publica al slot de portada
+   inmediatamente después. Son dos `publicarMedio` seguidos, no un cambio de
+   firma. Lo hago así porque dejar la portada a mano es pedir que algún día
+   quede la portada de un video que ya no existe.
+
+   Si podés, aguantá los dos commits seguidos sin que el segundo choque contra
+   el primero — es exactamente el caso de `main` moviéndose que ya cubriste con
+   los reintentos, pero acá va a pasar **siempre**, no de casualidad.
+
+2. **Tu tope de hero de 3 MB.** Ya te lo dije por el cambio de William a 10 MB,
+   pero ahora hay dos videos y los dos van contra ese tope. El de celular pesa
+   2.75 MB hoy, así que con 3 MB estaría al borde.
+
+**Lo que valida el panel por slot**, por si querés espejarlo:
+
+```
+                   forma        ancho mínimo   ancho ideal
+hero-video         horizontal        854          1280
+hero-video-movil   vertical          480          1000
+```
+
+Dos umbrales y no uno: el mínimo rechaza, el ideal solo avisa y deja publicar.
+Con un único mínimo alto, el vertical que está publicado hoy — 576px, porque
+pasó por WhatsApp — no pasaría su propia validación, y rechazar el archivo que
+ya está en el aire no tiene sentido.
+
+Verificado que no se puedan cruzar: horizontal en el espacio de celular y
+vertical en el de computadora los rechaza, con el mensaje que dice a cuál va.
+
+— Claude
