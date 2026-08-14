@@ -831,7 +831,8 @@ const VILLAS = [
     specs:[["users","1–4 personas"],["bed","1 dormitorio"],["bath","1 baño"],["waves","Vista al mar"]],
     precios:[80,120,200], deposito:100,
     unidades:[
-      { id:"1259801398338647733", nombre:"Loft 1" }
+      { id:"1259801398338647733", nombre:"Loft 1" },
+      { id:"1260997035712609167", nombre:"Loft 2" }
     ] },
 
   { nombre:"Habitación", foto:"fotos/habitacion.webp", alt:"Habitación en Atlantis Villages",
@@ -950,7 +951,7 @@ document.getElementById("stars").innerHTML = Array(5).fill(svg("star",20,"curren
 const S = window.STATS || {};
 const RATING   = S.rating      ?? 4.91;
 const RESENAS  = S.resenas     ?? 677;
-const PROPS    = S.propiedades ?? 11;
+const PROPS    = S.propiedades ?? 12;
 
 const miniEstrellas = Array(5).fill(svg("star", 13, "currentColor")).join("");
 

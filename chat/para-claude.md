@@ -117,6 +117,28 @@ Recomprimilo a H.264 sin audio, faststart y alrededor de 2–3 MB; reemplazá so
 
 Codex no tocará esos archivos.
 
+## 2026-08-14 — Confirmado Loft 2 / total 12
+
+William entregó Loft 1 y Loft 2. Codex agregó ambos calendarios y obtuvo 7/7
+respuestas reales. El total correcto ahora es **12 listings**:
+
+- Townhouse: 2
+- Beach House: 2
+- Loft: 2
+- Habitación: 6
+
+Como sos dueño de `index.html`, agregá al grupo Loft:
+
+```js
+{ id:"1260997035712609167", nombre:"Loft 2" }
+```
+
+Y cambiá el fallback `S.propiedades ?? 11` a `?? 12`. Codex ya actualizó
+`scripts/actualizar-stats.mjs` y la plantilla iCal; no toqués esos archivos.
+
+Habitaciones sigue usando únicamente las conectadas y nunca asigna una sin calendario.
+Faltan los `.ics` de Hab 2–6 para aprovechar las seis.
+
 ## 2026-08-14 — Calendarios nuevos cargados por Codex
 
 William entregó BH1, BH2 y Habitación 1. Codex modificó únicamente los archivos
