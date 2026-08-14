@@ -1,0 +1,13 @@
+# El sitio publico es bienvenido en los buscadores.
+User-agent: *
+Allow: /
+
+# El panel de fotos no. Ya lleva <meta name="robots" content="noindex">, pero
+# esto lo saca tambien de los rastreadores que solo miran este archivo.
+#
+# Esto NO es una medida de seguridad: robots.txt es una peticion, no una
+# barrera, y este archivo es publico. Lo que protege el panel es la contrasena
+# y que la Edge Function compare el usuario contra un UID fijo.
+Disallow: /admin.html
+
+Sitemap: https://daniel001hn.github.io/atlantis/sitemap.xml

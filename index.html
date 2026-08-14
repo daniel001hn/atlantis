@@ -3,6 +3,32 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Seguridad. En Stefany esto va en vercel.json como headers de verdad, pero
+     GitHub Pages no deja poner headers propios: _headers lo leen Cloudflare y
+     Netlify, no Pages. Como <meta> funciona igual para CSP y referrer.
+
+     Lo que NO se puede desde <meta> y por lo tanto acá no existe:
+     X-Frame-Options / frame-ancestors (el navegador los ignora en meta), o sea
+     que no hay defensa contra que alguien meta el sitio en un iframe. Para eso
+     habria que mudarse a Cloudflare Pages, donde _headers ya esta escrito.
+
+     'unsafe-inline' es obligatorio: todo el CSS y el JS viven dentro del HTML.
+     Aun asi el CSP sirve — bloquea cargar scripts de dominios ajenos, que es
+     por donde entra el codigo inyectado. -->
+<meta http-equiv="Content-Security-Policy" content="
+  default-src 'self';
+  script-src 'self' 'unsafe-inline';
+  style-src 'self' 'unsafe-inline';
+  img-src 'self' data:;
+  media-src 'self';
+  font-src 'self';
+  connect-src 'self';
+  object-src 'none';
+  base-uri 'self';
+  form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+
 <title>Atlantis Villages Portal</title>
 <meta name="description" content="Villas privadas a una cuadra del mar en Playa Bonita, Tela, Honduras. Townhouses, Beach Houses, Lofts y Habitaciones para grupos de 1 a 70 personas.">
 <link rel="icon" href="fotos/logo.png">

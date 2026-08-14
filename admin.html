@@ -4,6 +4,25 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
+
+<!-- connect-src lista Supabase explicitamente: es el unico destino externo al
+     que este panel tiene permiso de hablar. Si manana alguien inyecta codigo
+     que intente mandar la sesion a otro lado, el navegador lo corta.
+     blob: en img-src y media-src es para las vistas previas, que se arman con
+     URL.createObjectURL antes de subir nada. -->
+<meta http-equiv="Content-Security-Policy" content="
+  default-src 'self';
+  script-src 'self' 'unsafe-inline';
+  style-src 'self' 'unsafe-inline';
+  img-src 'self' data: blob:;
+  media-src 'self' blob:;
+  font-src 'self';
+  connect-src 'self' https://fgikqdhopzyhmsyhxsui.supabase.co;
+  object-src 'none';
+  base-uri 'self';
+  form-action 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+
 <title>Atlantis · Fotos</title>
 <style>
 /* Mismos tokens que index.html: si allá cambia el turquesa, acá también. */
