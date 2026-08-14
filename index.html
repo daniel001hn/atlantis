@@ -535,6 +535,31 @@ footer{background:var(--ink);padding:56px 20px}
   }
 }
 </style>
+
+<!-- Va en el <head> y no abajo con disponibilidad.js: el hero elige su video
+     en un script pegado al elemento, mucho antes del final del body, y
+     necesita saber si esos archivos fueron reemplazados desde el panel.
+     Pesa unos cientos de bytes. -->
+<script src="medios.js"></script>
+<script>
+/* ---------- fotos y videos cambiados desde admin.html ----------
+   El id del espacio es el nombre del archivo por defecto sin extensión —
+   fotos/townhouse.webp es "townhouse" — salvo los cuatro del hero, que tienen
+   nombres propios. Si medios.js falta o llega vacío, medio() devuelve la ruta
+   original y el sitio se ve exactamente igual que hoy. */
+var SLOT_DE = {
+  "fotos/hero.mp4":                  "hero-video",
+  "fotos/hero-vertical.mp4":         "hero-video-movil",
+  "fotos/hero-poster.webp":          "hero-poster",
+  "fotos/hero-poster-vertical.webp": "hero-poster-movil"
+};
+
+function medio(ruta) {
+  var puestos = (window.MEDIOS && window.MEDIOS.slots) || {};
+  var slot = SLOT_DE[ruta] || ruta.replace(/^fotos\//, "").replace(/\.[^.]+$/, "");
+  return puestos[slot] || ruta;
+}
+</script>
 </head>
 <body>
 
@@ -578,10 +603,11 @@ footer{background:var(--ink);padding:56px 20px}
       if (!v) return;
       var vertical = matchMedia("(max-aspect-ratio: 1/1)").matches;
       if (vertical) {
-        v.poster = "fotos/hero-poster-vertical.webp";
-        v.src = "fotos/hero-vertical.mp4";
+        v.poster = medio("fotos/hero-poster-vertical.webp");
+        v.src = medio("fotos/hero-vertical.mp4");
       } else {
-        v.src = "fotos/hero.mp4";
+        v.poster = medio("fotos/hero-poster.webp");
+        v.src = medio("fotos/hero.mp4");
       }
     })();
     </script>
@@ -1328,6 +1354,35 @@ document.querySelectorAll("form[data-consulta]").forEach(form => {
     irASeccion("disponibilidad");
   });
 });
+
+/* =====================================================================
+   FOTOS CAMBIADAS DESDE EL PANEL
+   Una sola pasada al final, sobre todo lo que quedó en el DOM. Cubre tanto
+   las <img> escritas a mano en el HTML como las que generan VILLAS, el bento
+   y las actividades, sin tener que acordarse de llamar a medio() en cada
+   lugar donde se arma un src — que es exactamente el tipo de cosa que se
+   olvida cuando se agrega una sección nueva.
+
+   Va acá y no antes porque villas, bento, actividades y FAQ se generan por
+   JS: antes de esta línea esas <img> todavía no existen.
+
+   El logo queda afuera a propósito: solo se usa como favicon y como og:image,
+   y las dos las lee el navegador (o el crawler de WhatsApp) del HTML crudo,
+   antes de que corra nada de esto. Cambiarlo desde el panel necesita tocar
+   el HTML, no el DOM.
+   ===================================================================== */
+(function () {
+  var cambiadas = 0;
+  document.querySelectorAll('img[src^="fotos/"]').forEach(function (img) {
+    var actual = img.getAttribute("src");
+    var nueva = medio(actual);
+    if (nueva !== actual) { img.src = nueva; cambiadas++; }
+  });
+  if (cambiadas && window.MEDIOS) {
+    console.log("medios.js: " + cambiadas + " imagenes reemplazadas (manifiesto del " +
+      (window.MEDIOS.actualizado || "?") + ")");
+  }
+})();
 
 /* =====================================================================
    REVELADO AL SCROLL
