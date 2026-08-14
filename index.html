@@ -466,6 +466,40 @@ footer{background:var(--ink);padding:56px 20px}
 @media (min-width:901px) and (max-width:1100px){
   .acts{grid-template-columns:repeat(2,1fr)}
 }
+
+/* ---------- las tres hojas en celular ----------
+   En escritorio son position:sticky y se tapan entre sí. Acá no: Safari se
+   porta mal con sticky y además el contenido no siempre entra en una
+   pantalla. Se conserva la idea de "tres hojas" con flujo normal y
+   min-height — que puede crecer si el contenido lo pide, cosa que un height
+   fijo no permite (iPhone SE).
+
+   Va al FINAL del archivo a propósito: la regla
+   ".split,.split.invertido{flex-direction:column}" del bloque max-width:900px
+   tiene la misma especificidad, así que solo gana la que va después. */
+@media (max-width:900px){
+  .stack > .slide{
+    min-height:calc(100vh - var(--nav-h));
+    min-height:calc(100svh - var(--nav-h));   /* en iOS, el alto CON la barra de URL */
+    box-sizing:border-box;
+    display:flex;
+    align-items:center;            /* centrado cuando sobra alto; si falta, crece */
+    /* El nav es fixed: sin descontarlo, el título de la hoja le queda debajo.
+       Los 44px extra son el mismo aire que usa la primera lámina en escritorio. */
+    padding:calc(var(--nav-h) + 44px) 0 48px;
+    border-bottom:1px solid rgba(2,33,30,.09);   /* el corte entre una hoja y la siguiente */
+  }
+  .stack > .slide:last-child{border-bottom:0}
+  .stack > .slide > .lamina{width:100%}
+
+  /* column-reverse y no column: el DOM trae la foto primero (así la necesita
+     el escritorio), y en celular salía una imagen enorme y recién abajo el
+     título — parecía que la foto era de la sección anterior. */
+  .split,.split.invertido{flex-direction:column-reverse;justify-content:center}
+  .split .copy>div{padding:0 24px;max-width:none}
+  .split .media{margin-top:28px}
+  .split .media img{height:240px}
+}
 </style>
 </head>
 <body>
