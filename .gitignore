@@ -10,3 +10,6 @@ _*.html
 node_modules/
 .DS_Store
 Thumbs.db
+
+# Archivos que genera el CLI de Supabase al conectarse
+supabase/.temp/
