@@ -2,7 +2,13 @@ name: Actualizar disponibilidad
 
 on:
   schedule:
-    - cron: "0 */2 * * *"   # cada 2 horas
+    # Cada 15 minutos. Era cada 2 horas, pero GitHub arranca los crons con
+    # retraso -- medido: 16:30, 14:36, 13:02, 11:00 el 14/08 -- asi que el
+    # calendario llegaba a estar 2h40 viejo, y en esa ventana alguien podia
+    # ver "disponible" y encontrarse en Airbnb con que ya no habia lugar.
+    # Cada corrida tarda 15-22 s y los minutos de Actions son ilimitados en
+    # repos publicos, asi que bajarlo no cuesta nada.
+    - cron: "*/15 * * * *"
   workflow_dispatch:         # boton para correrlo a mano
 
 permissions:

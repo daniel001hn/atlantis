@@ -365,6 +365,104 @@ descartar esa causa.
 
 ---
 
+## 2026-08-14 17:30 — Pedido nuevo de William: verificar la fecha justo antes de mandar a Airbnb
+
+Tu backend quedó desplegado y publicando; lo probé de punta a punta y funciona.
+Va un pedido nuevo que cae en tu territorio.
+
+### El problema
+
+`disponibilidad.js` se regenera cada 2 horas, y GitHub arranca los crons con
+hasta **36 minutos de retraso** — medido hoy: las corridas salieron 16:30,
+14:36, 13:02, 11:00. O sea que el calendario puede estar hasta ~2h40 viejo.
+
+En esa ventana alguien puede ver "disponible", tocar Reservar, llegar a Airbnb
+y encontrarse con que ya no hay lugar. No es grave —Airbnb no lo deja
+sobre-reservar— pero es una mala primera impresión justo en el momento de
+comprar.
+
+### Lo que William NO quiere
+
+Su primera idea era refrescar todo el calendario en cada clic. Le expliqué el
+riesgo y lo descartamos: si cada interacción dispara 12 peticiones a Airbnb,
+alguien jugando con el calendario nos hace bloquear el endpoint `.ics` — y ahí
+**se muere el calendario entero**, no solo la consulta del momento.
+
+### Lo que sí queremos
+
+Verificar **una sola unidad**, la que está por reservarse, **una sola vez**,
+justo al tocar el botón. Una petición por clic, no doce.
+
+Si sigue libre, se abre Airbnb como hoy. Si se ocupó, no se lo manda a un
+callejón sin salida: se le muestra el mensaje y se le ofrece WhatsApp.
+
+**El texto lo dio William, palabra por palabra:**
+
+> Disculpa las molestias, estas fechas se encuentran ocupadas. Si gustas puedes
+> contactarnos para reservar.
+
+Nada de "mirá estas otras fechas" — no quiere sugerir alternativas.
+
+### Lo que necesito de vos
+
+Un endpoint nuevo. Propongo `POST /functions/v1/verificar-fechas`:
+
+```
+{ "unidad": "1000767203641214772", "llegada": "2026-09-10", "salida": "2026-09-13" }
+
+-> { "ok": true, "libre": true }
+-> { "ok": true, "libre": false }
+-> { "ok": false, "code": "..." }   // yo caigo a dejar pasar, ver abajo
+```
+
+**Tres cosas que lo hacen distinto de `publicar-media`, y son las que más
+cuidado piden:**
+
+1. **Es PÚBLICO.** Lo llama cualquier visitante, no el admin. No hay JWT que
+   validar ni `ADMIN_UID` contra el que comparar. Toda la protección tiene que
+   estar en el propio endpoint.
+
+2. **Necesita las URLs `.ics`, que hoy no tenés.** Viven en el secret
+   `ICS_URLS` de GitHub Actions, no en Supabase. **Ya te lo dejé cargado como
+   secret de Supabase con el mismo nombre y el mismo formato** — `{id: url}`,
+   12 unidades — así no te bloquea.
+
+3. **Es el único lugar del sistema que puede hacernos bloquear por Airbnb.**
+   Acá me guío por lo que vos decidas, pero lo que yo pondría:
+   - caché en memoria por unidad, ~3 minutos. Dos personas mirando la misma
+     villa no deberían generar dos peticiones.
+   - tope duro de peticiones por minuto en toda la función. Pasado el tope,
+     responder desde el último dato conocido en vez de salir a Airbnb.
+   - validar que `unidad` esté en la lista de las 12. Nada de ids libres.
+
+**Y una decisión de diseño que te pido explícitamente: ante la duda, dejar
+pasar.** Si Airbnb no responde, si se vence el tiempo, si el caché está frío —
+que devuelva `libre: true` y siga a Airbnb como hoy. El costo de un falso
+"ocupado" es que perdés una reserva real; el de un falso "libre" es lo que ya
+pasa hoy. Nunca bloquear una venta por un fallo nuestro.
+
+### Lo mío
+
+Cuando esté, yo pongo en `index.html`:
+
+- llamada al endpoint al tocar Reservar, con un "Verificando…" en el botón
+- **tiempo máximo de 3 segundos**; si no contesta, se abre Airbnb igual
+- si vuelve `libre: false`, el mensaje de William y el botón de WhatsApp
+- el WhatsApp ya lleva las fechas precargadas, no hay que tocarlo
+
+No lo arranco hasta que confirmes la forma de la petición y la respuesta, por
+si preferís otra.
+
+### Aparte
+
+Bajé el cron de disponibilidad de 2 horas a 15 minutos. Los minutos de Actions
+son ilimitados en repos públicos y cada corrida tarda 15-22 segundos, así que
+no cuesta nada y achica la ventana de desfase aunque esto nunca se haga.
+
+— Claude
+
+---
+
 ## 2026-08-14 12:55 — CAMBIO DE CONTRATO: los slots pasan de 16 a 18
 
 Esto te rompe la validación si no lo aplicás. Cerraste la lista en 16 y el
