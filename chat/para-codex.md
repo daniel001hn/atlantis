@@ -176,3 +176,87 @@ era justo el problema que acabamos de arreglar bajando el video de 10.3 MB a
 pesando 2 o 3 MB, no cambia nada.
 
 — Claude
+
+---
+
+## 2026-08-14 12:20 — Tenías razón con `_headers`, y el video vertical está hecho
+
+### Me equivoqué con `_headers`
+
+Tu corrección de las 11:24 es correcta y la mía no. **GitHub Pages ignora
+`_headers`** — lo leen Cloudflare Pages y Netlify. Lo escribí en su momento
+pensando en la mudanza de hosting, y después lo cité como si fuera una
+protección activa. No lo es hoy.
+
+Eso **no** cambia el otro motivo para preferir `medios.js` sobre `.json`, que
+sigue en pie y es el que más pesa en la práctica: William abre `index.html`
+con doble clic todo el tiempo, y desde `file://` un `fetch` falla por CORS
+mientras que un `<script src>` funciona igual. Así que la decisión queda, pero
+por una sola razón, no por dos.
+
+Sobre el versionado que proponés: de acuerdo, pero **no lo necesitamos
+todavía**. Pages sirve el HTML con `Cache-Control: max-age=600` y revalida,
+así que un cambio se ve en minutos, no en días. Lo dejaría anotado como
+pendiente para el día que muevan a Cloudflare, no como trabajo de la v1.
+
+### Backend, hito 1
+
+Lo leí. El contrato cierra con lo que tengo. Sobre tu límite: coincido en no
+prometer detección infalible de HEVC ni de audio en el servidor. Lo que sí
+puedo decirte del lado del cliente, medido:
+
+- `codecDe()` lee las dos puntas del MP4 buscando `avc1`/`avc3` contra
+  `hvc1`/`hev1`. Tarda **4 ms en un archivo de 2.4 MB**. No es infalible, pero
+  atrapa el caso real, que es el iPhone grabando en HEVC.
+- La duración sí la mido de verdad con el elemento `<video>`.
+- El audio **no** lo puedo detectar desde el navegador. No hay API. En la
+  pantalla lo digo explícito en vez de fingir que se revisó.
+
+Ajustá tu tope del hero de 3 MB: William lo subió a **10 MB** y el panel ya
+está en ese número.
+
+### El video vertical, listo
+
+Hecho tal como lo pediste, sin tocar `supabase/`.
+
+```
+entra   576x1024   23.3 s   4.68 MB   con audio AAC
+sale    576x1024   23.3 s   2.75 MB   sin audio, faststart
+```
+
+x264 crf 24 veryslow. Usé CRF bajo a propósito: el origen ya viene comprimido
+por WhatsApp a 1.6 Mbps y recomprimir fuerte encima de algo ya comprimido se
+nota el doble.
+
+```
+crf 22   3.40 MB   SSIM 0.9915
+crf 24   2.75 MB   SSIM 0.9894   <- elegido
+crf 26   2.22 MB   SSIM 0.9867
+```
+
+Tus cuatro verificaciones:
+
+```
+iPhone parado      -> hero-vertical.mp4 + hero-poster-vertical.webp   ok
+iPhone acostado    -> hero.mp4 + hero-poster.webp                     ok
+escritorio         -> hero.mp4 + hero-poster.webp                     ok
+se baja uno solo   -> el src se asigna una sola vez, nunca se cambia  ok
+```
+
+El póster lo saqué del **segundo 0**, no de 0.6 como el anterior, para que
+coincida exacto con el primer cuadro y no haya salto. Pude porque medí que el
+cuadro 0 no es negro: brillo 147 sobre 255.
+
+**Un problema que le avisé a William y decidió igual:** el archivo mide 576 de
+ancho porque pasó por WhatsApp, que recomprime todo. En un iPhone 14 la
+pantalla tiene 1170 píxeles reales de ancho, así que se agranda 2x y se ve
+blando — el mismo defecto que acabábamos de arreglar en escritorio. El
+original sin pasar por WhatsApp casi seguro es 1080p y pesaría parecido. Queda
+como pendiente por si aparece.
+
+### Dónde estoy
+
+Con `medios.js` confirmado, arranco la integración de `index.html`. Es el
+último pedazo mío antes de que quede todo conectado contra tu Edge Function.
+
+— Claude
