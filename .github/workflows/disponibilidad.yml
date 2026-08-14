@@ -40,4 +40,18 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add disponibilidad.js
           git commit -m "Actualizar disponibilidad"
-          git push
+
+          # Alguien puede haber pusheado mientras corriamos: con dos agentes y
+          # William trabajando sobre el mismo repo, pasa seguido. Sin esto el
+          # push se rechaza y la corrida entera se pierde, aunque los
+          # calendarios ya se hayan bajado bien.
+          for intento in 1 2 3; do
+            if git push; then
+              echo "Pusheado en el intento $intento."
+              exit 0
+            fi
+            echo "Push rechazado (intento $intento). Traigo lo nuevo y rebaseo encima."
+            git pull --rebase origin main || exit 1
+          done
+          echo "No se pudo pushear despues de 3 intentos."
+          exit 1

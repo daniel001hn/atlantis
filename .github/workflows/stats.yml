@@ -33,4 +33,16 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add stats.js stats.json
           git commit -m "Actualizar stats de Airbnb"
-          git push
+
+          # Mismo reintento que en disponibilidad.yml: si alguien pusheo
+          # mientras corriamos, se rebasa encima en vez de perder la corrida.
+          for intento in 1 2 3; do
+            if git push; then
+              echo "Pusheado en el intento $intento."
+              exit 0
+            fi
+            echo "Push rechazado (intento $intento). Traigo lo nuevo y rebaseo encima."
+            git pull --rebase origin main || exit 1
+          done
+          echo "No se pudo pushear despues de 3 intentos."
+          exit 1
