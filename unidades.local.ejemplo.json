@@ -1,0 +1,33 @@
+{
+  "_leeme": [
+    "PLANTILLA. Copiá este archivo como  unidades.local.json  y pegá cada URL.",
+    "Ese archivo NO se sube a git (está en .gitignore).",
+    "",
+    "Dónde sacar cada URL en Airbnb:",
+    "  Modo anfitrión -> Calendario -> [el anuncio] -> Sincronizar calendarios",
+    "  -> Exportar calendario -> copiar el link .ics",
+    "",
+    "OJO: ese link es secreto. El token ?s= le da a cualquiera acceso de",
+    "lectura a tu calendario.",
+    "",
+    "Podés cargarlas de a poco: borrá las líneas que todavía no tengas.",
+    "En GitHub, el mismo JSON va en el secret ICS_URLS (sin este _leeme).",
+    "",
+    "Probar:  node scripts/actualizar-disponibilidad.mjs"
+  ],
+
+  "1000767203641214772": "",
+  "1001578383448277292": "",
+
+  "1243126377088285474": "",
+  "1242956510290064184": "",
+
+  "1259801398338647733": "",
+
+  "1257566351282380636": "",
+  "1263164443428189188": "",
+  "1259698504611212201": "",
+  "1261125295591084048": "",
+  "1263182861774194266": "",
+  "1261122689607455594": ""
+}

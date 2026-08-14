@@ -1,0 +1,26 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Convertir PNG a WebP</title>
+<script>
+async function convertir(nombre) {
+  const img = new Image();
+  img.src = `../fotos/${nombre}.png`;
+  await img.decode();
+  const canvas = document.createElement("canvas");
+  canvas.width = img.naturalWidth;
+  canvas.height = img.naturalHeight;
+  canvas.getContext("2d").drawImage(img, 0, 0);
+  document.body.textContent = canvas.toDataURL("image/webp", .82);
+  document.title = "LISTO";
+}
+
+addEventListener("load", async () => {
+  try {
+    const nombre = new URLSearchParams(location.search).get("foto");
+    await convertir(nombre);
+  } catch (error) {
+    document.body.textContent = `ERROR:${error.name}:${error.message}`;
+    document.title = "ERROR";
+  }
+});
+</script>

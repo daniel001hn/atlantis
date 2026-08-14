@@ -1,0 +1,17 @@
+# Cabeceras para Cloudflare Pages / Netlify.
+# Los datos se regeneran cada 2 horas: el navegador debe revalidarlos siempre.
+# Sin esto, alguien que visitó ayer sigue viendo la disponibilidad de ayer,
+# aunque el cron ya haya actualizado el archivo.
+
+/disponibilidad.js
+  Cache-Control: no-cache
+
+/stats.js
+  Cache-Control: no-cache
+
+/index.html
+  Cache-Control: no-cache
+
+# Las fotos sí se cachean fuerte: nunca cambian sin cambiar de nombre.
+/fotos/*
+  Cache-Control: public, max-age=31536000, immutable

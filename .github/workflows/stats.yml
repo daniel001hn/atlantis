@@ -1,0 +1,36 @@
+name: Actualizar stats de Airbnb
+
+on:
+  schedule:
+    # Dias 1 y 15 de cada mes, 06:00 UTC (medianoche en Honduras).
+    # GitHub no tiene "cada 2 semanas" nativo; esto es lo mas cercano y estable.
+    - cron: "0 6 1,15 * *"
+  workflow_dispatch:        # boton para correrlo a mano desde la pestana Actions
+
+permissions:
+  contents: write           # necesario para que el bot pueda commitear
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"    # trae fetch global, no hacen falta dependencias
+
+      - name: Leer ratings de Airbnb
+        run: node scripts/actualizar-stats.mjs
+
+      - name: Commitear si cambio algo
+        run: |
+          if [ -z "$(git status --porcelain stats.js stats.json)" ]; then
+            echo "Sin cambios."
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add stats.js stats.json
+          git commit -m "Actualizar stats de Airbnb"
+          git push

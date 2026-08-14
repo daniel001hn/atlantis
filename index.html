@@ -1,0 +1,1294 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atlantis Villages Portal</title>
+<meta name="description" content="Villas privadas a una cuadra del mar en Playa Bonita, Tela, Honduras. Townhouses, Beach Houses, Lofts y Habitaciones para grupos de 1 a 70 personas.">
+<link rel="icon" href="fotos/logo.png">
+<meta property="og:title" content="Atlantis Villages Portal">
+<meta property="og:description" content="Villas privadas a una cuadra del mar en Playa Bonita, Tela, Honduras.">
+<meta property="og:image" content="fotos/logo.png">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --turq:#5BC8C8;        /* el turquesa de marca: superficies y acentos */
+  --green-deep:#1F6E6E;  /* mismo tono, oscuro: texto y fondos con texto blanco */
+  --green-mid:#5BC8C8;
+  --ink:#02211E;
+  --bone:#F9F9F7;
+  --bone-alt:#f0f0ec;
+  --airbnb:#FF385C;
+  --airbnb-h:#E31C5F;
+  --wa:#25D366;
+  --wa-h:#1da851;
+  --display:"Cormorant Garamond",Garamond,Georgia,serif;
+  --body:Inter,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --nav-h:66px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bone);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+img,video{display:block;max-width:100%}
+a{color:inherit}
+button{font:inherit}
+section[id],footer[id]{scroll-margin-top:var(--nav-h)}
+
+.wrap{margin:0 auto;padding:0 20px}
+.w-2xl{max-width:672px}.w-3xl{max-width:768px}.w-6xl{max-width:1152px}.w-7xl{max-width:1280px}
+
+.display{font-family:var(--display);font-weight:300;line-height:1.22;margin:0}
+.italic{font-style:italic}
+.eyebrow{font-size:.75rem;letter-spacing:.3em;text-transform:uppercase;font-weight:500;color:var(--green-mid);margin:0 0 1rem}
+.h2{font-size:clamp(1.9rem,4.4vw,3rem)}
+.h3{font-size:clamp(1.5rem,3vw,2.25rem)}
+.center{text-align:center}
+.sec{padding:76px 20px}
+.sec-bone{background:var(--bone)}
+.sec-alt{background:var(--bone-alt)}
+.head{text-align:center;margin-bottom:42px}
+
+/* ---------- nav ---------- */
+nav{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(91,200,200,.95);backdrop-filter:blur(12px);box-shadow:0 4px 12px rgba(2,33,30,.12)}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:var(--nav-h);max-width:1280px;margin:0 auto;padding:0 20px}
+.brand{font-family:var(--display);font-weight:300;color:var(--ink);font-size:1.4rem;letter-spacing:.25em;text-decoration:none;white-space:nowrap}
+.nav-links{display:flex;align-items:center;gap:32px}
+.nav-links a{color:rgba(2,33,30,.75);text-decoration:none;font-size:.875rem;letter-spacing:.02em;transition:color .3s}
+.nav-links a:hover{color:var(--ink)}
+.nav-cta{border:1px solid rgba(2,33,30,.45);color:var(--ink);padding:8px 24px;font-size:.875rem;transition:.3s}
+.nav-cta:hover{background:var(--ink);color:var(--turq)}
+.burger{display:none;background:none;border:0;color:var(--ink);padding:8px;cursor:pointer}
+
+/* ---------- hero ---------- */
+.hero{position:relative;height:100vh;min-height:700px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.hero video,.hero .poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hero .scrim{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.5),rgba(0,0,0,.3) 50%,rgba(0,0,0,.6))}
+.hero-in{position:relative;z-index:10;text-align:center;padding:0 20px;max-width:896px;margin:0 auto}
+.hero .eyebrow{color:rgba(255,255,255,.7);letter-spacing:.35em}
+.hero h1{color:#fff;font-size:clamp(2.25rem,6vw,4.5rem);text-shadow:0 2px 20px rgba(0,0,0,.3)}
+.hero p.lead{color:rgba(255,255,255,.8);font-size:clamp(1rem,2vw,1.125rem);max-width:42rem;margin:24px auto 0}
+.scroll-hint{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.5);animation:bounce 1.6s infinite}
+@keyframes bounce{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,-9px)}}
+
+/* ---------- forms ---------- */
+.searchbar{margin-top:40px;background:rgba(255,255,255,.1);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.2);border-radius:16px;padding:14px;display:flex;flex-wrap:wrap;gap:10px;max-width:42rem;margin-inline:auto}
+.searchbar .f{flex:1 1 130px;min-width:0;text-align:left}
+.searchbar label{display:block;color:rgba(255,255,255,.6);font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin:0 0 4px 12px}
+.searchbar input,.searchbar select{width:100%;background:rgba(255,255,255,.1);border:0;color:#fff;padding:9px 12px;border-radius:8px;font-size:.875rem;color-scheme:dark}
+.searchbar input:focus,.searchbar select:focus{outline:0;box-shadow:0 0 0 1px rgba(255,255,255,.3)}
+.searchbar option{color:#1f2937}
+.searchbar button{background:#fff;color:var(--green-deep);border:0;padding:11px 24px;border-radius:8px;font-size:.875rem;font-weight:500;cursor:pointer;align-self:flex-end;white-space:nowrap;flex:0 0 auto}
+
+.card-form{margin-top:0;background:#fff;border-radius:16px;box-shadow:0 20px 40px rgba(2,33,30,.09);padding:20px}
+.card-form .row{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.card-form label{display:block;color:rgba(2,33,30,.5);font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;text-align:left}
+.card-form input,.card-form select{width:100%;border:0;border-bottom:1px solid rgba(31,110,110,.28);background:transparent;padding:12px 0;color:var(--ink);font-family:var(--body);font-size:1rem}
+.card-form input:focus,.card-form select:focus{outline:0;border-bottom-color:var(--green-deep)}
+.card-form button[type=submit]{margin:32px auto 0;display:flex;align-items:center;gap:8px;background:var(--green-deep);color:#fff;border:0;padding:16px 40px;border-radius:8px;font-size:.875rem;font-weight:500;cursor:pointer;transition:background .3s}
+.card-form button[type=submit]:hover{background:var(--turq);color:var(--ink)}
+
+/* ---------- stats ---------- */
+.stats{max-width:672px;margin:64px auto 0;display:grid;grid-template-columns:repeat(3,1fr);gap:24px;text-align:center}
+.stats b{display:block;font-family:var(--display);font-weight:300;font-size:clamp(2.25rem,5vw,3rem);color:var(--green-deep);line-height:1}
+.stats span{display:block;margin-top:8px;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:rgba(2,33,30,.5)}
+/* Va como .stats .mini-stars y no solo .mini-stars: la regla ".stats span"
+   de arriba tiene más especificidad y le imponía el gris de las etiquetas.
+   Altura fija y presente en las tres columnas aunque esté vacía, para que
+   las tres etiquetas queden a la misma altura. */
+.stats .mini-stars{display:flex;justify-content:center;gap:3px;height:14px;margin-top:8px;color:#e8b33c}
+.stats .mini-stars svg{width:14px;height:14px;stroke-width:0}   /* relleno sólido: con borde se ven sucias a este tamaño */
+
+/* ---------- láminas apiladas ----------
+   Cada .slide se pega arriba y la siguiente le pasa por encima. La página
+   scrollea, pero visualmente el contenido se reemplaza en el mismo lugar.
+   Solo en pantallas grandes: en un teléfono el contenido no entra en 100vh
+   y quedaría cortado, así que ahí vuelve al flujo normal. */
+.slide{background:var(--bone)}
+
+@media (min-width:901px) and (min-height:620px){
+  .slide{position:sticky;top:0;height:100vh;overflow:hidden;display:flex;align-items:center}
+  .slide > .lamina{width:100%}
+  .slide > .lamina.split{height:100%;min-height:0}
+  /* La primera lámina alinea arriba, no al centro: centrada quedaba muy
+     caída, y subirla con scroll dejaba asomar la lámina siguiente por abajo.
+     Así el slide llena la pantalla y el texto igual queda alto.
+     Las 2 y 3 son foto a sangre y sí van centradas. */
+  .stack > .slide:first-child{
+    padding-top:calc(var(--nav-h) + 44px);
+    box-sizing:border-box;
+    align-items:flex-start;
+  }
+}
+
+/* La lámina entra con un zoom corto en vez de deslizarse */
+@media (prefers-reduced-motion: no-preference){
+  /* Escala hacia ADENTRO (menor a 1). Con scale(1.07) la lámina medía 7% más
+     que la ventana y provocaba barra horizontal hasta terminar de aparecer.
+     Creciendo hasta su tamaño real se lee igual como zoom y nunca desborda. */
+  .js .rev.zoom{transform:scale(.955);opacity:0}
+  .js .rev.zoom.visible{transform:none;opacity:1}
+}
+
+/* ---------- split rows (galeria) ---------- */
+.split{display:flex;align-items:stretch;min-height:480px;overflow:hidden}
+.split.invertido{flex-direction:row-reverse}   /* no usar "rev": choca con la clase de animación */
+.split .media{width:50%;overflow:hidden}
+.split .media img{width:100%;height:100%;object-fit:cover}
+.split .copy{width:50%;display:flex;align-items:center;background:var(--bone)}
+.split .copy>div{padding:56px 64px;max-width:32rem}
+.split p.txt{color:rgba(2,33,30,.65);margin-top:20px}
+
+/* ---------- wave ---------- */
+.wave{position:relative;height:96px;overflow:hidden}
+.wave svg{position:absolute;top:0;left:0;width:100%;height:100%}
+
+/* ---------- bento (experiencias) ---------- */
+.bento{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.tile{position:relative;overflow:hidden;border-radius:12px;min-height:250px}
+.tile.wide{grid-column:span 2}
+.tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .7s}
+.tile:hover img{transform:scale(1.1)}
+.tile .grad{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.7),rgba(0,0,0,.2) 50%,transparent)}
+.tile .cap{position:absolute;left:0;right:0;bottom:0;padding:20px;z-index:2}
+.tile .cap h3{margin:0;color:#fff;font-size:1.125rem;font-weight:500}
+.tile .cap p{margin:4px 0 0;color:rgba(255,255,255,.7);font-size:.875rem}
+
+/* ---------- villas ---------- */
+.villas{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
+
+.villa{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 10px 25px rgba(2,33,30,.08)}
+.villa .ph{position:relative;height:208px;overflow:hidden}
+.villa .ph img{width:100%;height:100%;object-fit:cover;transition:transform .7s}
+.villa:hover .ph img{transform:scale(1.05)}
+.villa .ph .grad{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.4),transparent)}
+.villa .ph h3{position:absolute;left:20px;bottom:16px;margin:0;color:#fff;font-family:var(--display);font-weight:300;font-size:1.875rem}
+.villa .bd{padding:18px}
+.features{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.features div{
+  background:var(--bone);border-radius:8px;padding:10px 12px;
+  display:flex;align-items:center;gap:8px;
+  font-size:.8rem;color:rgba(2,33,30,.75);
+}
+.features svg{width:16px;height:16px;flex:none;color:var(--green-deep)}
+.villa .dep{margin:10px 0 0;font-size:.72rem;color:rgba(2,33,30,.4)}
+.btn-ver{
+  width:100%;margin-top:11px;padding:10px;border-radius:8px;cursor:pointer;
+  border:1px solid rgba(31,110,110,.35);background:transparent;
+  color:var(--green-deep);font-family:var(--body);font-size:.875rem;font-weight:500;
+  transition:background .25s, color .25s, border-color .25s;
+}
+.btn-ver:hover{background:var(--green-deep);border-color:var(--green-deep);color:#fff}
+
+/* En pantalla ancha, las 4 en una sola fila: así la sección entera entra de
+   una y no queda una segunda fila asomando por abajo. La foto se achica y
+   las características pasan a una columna, que a este ancho se lee mejor
+   que dos apretadas.
+
+   Va DESPUÉS de las reglas base a propósito: con la misma especificidad gana
+   la última del archivo, y puesto antes no hacía absolutamente nada. */
+@media (min-width:1100px){
+  #alojamiento .wrap{max-width:1320px}
+  .villas{grid-template-columns:repeat(4,1fr);gap:18px}
+  .villa .ph{height:158px}
+  .villa .ph h3{font-size:1.45rem;left:16px;bottom:10px}
+  .villa .bd{padding:13px}
+  .features{grid-template-columns:1fr;gap:6px}
+  .features div{padding:8px 10px;font-size:.78rem}
+  .villa .dep{margin-top:8px}
+  .btn-ver{margin-top:9px;padding:9px;font-size:.82rem}
+}
+
+/* ---------- actividades ---------- */
+.acts-hero{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:48px}
+.act-big{position:relative;height:288px;border-radius:12px;overflow:hidden}
+.act-big img{width:100%;height:100%;object-fit:cover;transition:transform .7s}
+.act-big:hover img{transform:scale(1.05)}
+.act-big .grad{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.6),transparent)}
+.act-big .cap{position:absolute;left:20px;bottom:20px}
+.act-big .cap h3{margin:0;font-family:var(--display);font-weight:300;font-size:1.5rem;color:#fff}
+.act-big .cap p{margin:0;font-size:.875rem;color:rgba(255,255,255,.7)}
+.acts{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.act{background:#fff;border-radius:12px;padding:20px;display:flex;gap:16px;align-items:flex-start;box-shadow:0 1px 3px rgba(2,33,30,.07);transition:box-shadow .3s}
+.act:hover{box-shadow:0 8px 20px rgba(2,33,30,.1)}
+.act .ic{flex:none;padding:10px;border-radius:8px;background:rgba(91,200,200,.18);color:var(--green-deep);display:flex}
+.act h4{margin:0;font-size:.875rem;font-weight:500}
+.act p{margin:4px 0 0;font-size:.875rem;color:rgba(2,33,30,.55)}
+
+/* ---------- faq ---------- */
+.faq{display:flex;flex-direction:column;gap:12px}
+.faq details{background:#fff;border-radius:12px;box-shadow:0 1px 3px rgba(2,33,30,.07);padding:0 24px}
+.faq summary{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 0;cursor:pointer;font-weight:500;font-size:1rem;list-style:none}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary svg{flex:none;transition:transform .2s;color:rgba(2,33,30,.4)}
+.faq details[open] summary svg{transform:rotate(180deg)}
+.faq .ans{padding:0 0 20px;color:rgba(2,33,30,.65);font-size:.95rem}
+
+/* ---------- testimonial ---------- */
+.quote{background:var(--green-deep);padding:96px 20px;position:relative;overflow:hidden}
+.quote .blob{position:absolute;border-radius:50%;background:rgba(91,200,200,.2)}
+.quote .b1{width:256px;height:256px;top:-128px;left:-128px}
+.quote .b2{width:384px;height:384px;bottom:-128px;right:-128px;background:rgba(91,200,200,.1)}
+.quote .in{position:relative;z-index:10;max-width:768px;margin:0 auto;text-align:center}
+.stars{display:flex;justify-content:center;gap:4px;margin-bottom:32px;color:#fbbf24}
+.quote blockquote{margin:0;font-family:var(--display);font-weight:300;font-style:italic;color:#fff;font-size:clamp(1.5rem,3.6vw,2.25rem);line-height:1.45}
+.quote .who{margin-top:32px}
+.quote .who p{margin:0;font-size:.875rem;color:rgba(255,255,255,.6)}
+.quote .who p+p{margin-top:4px;color:rgba(255,255,255,.4)}
+
+/* ---------- cta ---------- */
+.cta{padding:96px 20px;position:relative;overflow:hidden;background:var(--turq)}
+.cta .in{position:relative;z-index:10;max-width:672px;margin:0 auto;text-align:center}
+.cta h2{color:var(--ink)}
+.cta p{color:rgba(2,33,30,.72);margin:24px auto 0;max-width:32rem}
+.btns{display:flex;gap:16px;justify-content:center;margin-top:40px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:16px 32px;border-radius:8px;color:#fff;text-decoration:none;font-size:.875rem;font-weight:500;box-shadow:0 10px 20px rgba(0,0,0,.15);transition:background .3s}
+.btn.ab{background:var(--airbnb)}.btn.ab:hover{background:var(--airbnb-h)}
+.btn.wa{background:var(--wa)}.btn.wa:hover{background:var(--wa-h)}
+
+/* ---------- footer ---------- */
+footer{background:var(--ink);padding:56px 20px}
+.foot-top{display:flex;justify-content:space-between;align-items:center;gap:32px;flex-wrap:wrap}
+.foot-top .brand{color:rgba(255,255,255,.8);font-size:1.125rem;letter-spacing:.2em}
+.foot-top .loc{margin:4px 0 0;color:rgba(255,255,255,.3);font-size:.875rem}
+.foot-links{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.foot-links a{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.5);text-decoration:none;font-size:.875rem;transition:color .3s}
+.foot-links a:hover{color:#fff}
+.foot-bot{border-top:1px solid rgba(255,255,255,.1);margin-top:32px;padding-top:32px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.foot-bot *{color:rgba(255,255,255,.2);font-size:.75rem;text-decoration:none;margin:0}
+
+/* ---------- animaciones al scroll ----------
+   Todo va detrás de .js: si el JavaScript no carga, el contenido se ve
+   normal en vez de quedar invisible para siempre. Y detrás de
+   prefers-reduced-motion, que es una preferencia real del sistema para
+   quien se marea con el movimiento. */
+@media (prefers-reduced-motion: no-preference) {
+  .js .rev{
+    opacity:0;
+    transform:translateY(30px) scale(.98);
+    transition:opacity .9s cubic-bezier(.22,1,.36,1), transform .9s cubic-bezier(.22,1,.36,1);
+    will-change:opacity, transform;
+  }
+  .js .rev.visible{opacity:1;transform:none;will-change:auto}
+  .js .rev.d1{transition-delay:.09s}
+  .js .rev.d2{transition-delay:.18s}
+
+  /* El hero se aleja al scrollear: el video crece un poco y el texto se va
+     hacia arriba difuminándose. Con animation-timeline lo maneja el
+     compositor, sin JS y sin listeners de scroll. */
+  @supports (animation-timeline: view()) {
+    .hero video{
+      animation:heroZoom linear both;
+      animation-timeline:view();
+      animation-range:exit 0% exit 100%;
+    }
+    @keyframes heroZoom{ to{ transform:scale(1.18) } }
+
+    .hero-in{
+      animation:heroFade linear both;
+      animation-timeline:view();
+      animation-range:exit 0% exit 70%;
+    }
+    @keyframes heroFade{ to{ opacity:0; transform:translateY(-70px) scale(.94) } }
+
+  }
+}
+
+/* ---------- calendario ---------- */
+/* El ancho se limita también por el ALTO de la ventana: la grilla es de
+   celdas cuadradas, así que limitar el ancho limita el alto en proporción.
+   Con una medida fija en píxeles el veredicto se salía de pantalla en
+   cuanto alguien tuviera zoom o una ventana baja. */
+/* Con el selector al costado sobra alto, así que el calendario puede ser
+   grande. El tope por vh queda sólo por si la ventana es muy baja. */
+.cal{margin-top:14px;max-width:min(396px, 56vh);margin-inline:auto}
+
+/* Al elegir un tipo la tarjeta se abre en dos columnas: selector y respuesta
+   a la izquierda, calendario a la derecha. Antes todo iba apilado y el
+   mensaje de Airbnb quedaba fuera de pantalla. */
+.panel{text-align:left}
+.sel{max-width:340px;margin:0 auto}
+
+@media (min-width:1000px){
+  /* La sección se ensancha para que quepan las dos columnas; el título se
+     mantiene angosto para que siga leyéndose bien. */
+  #disponibilidad .wrap{max-width:880px}
+  #disponibilidad .head{max-width:768px;margin-inline:auto}
+
+  /* Una sola tarjeta por fuera: fondo, borde y sombra van en el contenedor.
+     Las columnas siguen siendo independientes en tamaño, pero sin caja propia
+     — con dos sombras se leían como dos objetos sueltos. */
+  .card-form.abierto{
+    display:grid;
+    grid-template-columns:minmax(300px,1fr) minmax(360px,400px);
+    gap:24px;
+    align-items:start;
+    text-align:left;
+    padding:22px;
+  }
+  .card-form.abierto .panel,
+  .card-form.abierto .cal{
+    background:transparent;
+    box-shadow:none;
+    border-radius:0;
+    padding:0;
+  }
+  .card-form.abierto .panel{width:100%}
+  /* La columna izquierda ronda los 390px; con el padding de siempre los dos
+     botones sumaban 400 y se apilaban. */
+  .card-form.abierto .veredicto .btn{padding:11px 14px;font-size:.8rem}
+  .card-form.abierto .veredicto-btns{gap:10px;flex-wrap:nowrap}
+  .card-form.abierto .sel{margin:0;max-width:230px}
+  .card-form.abierto .cal{margin:0;max-width:none}
+  .card-form.abierto .cal-d{aspect-ratio:1}
+}
+.cal-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.cal-top b{font-family:var(--display);font-weight:400;font-size:1.2rem;text-transform:capitalize}
+.cal-nav{background:none;border:1px solid rgba(31,110,110,.3);border-radius:6px;width:30px;height:30px;cursor:pointer;color:var(--green-deep);display:flex;align-items:center;justify-content:center}
+.cal-nav:disabled{opacity:.25;cursor:default}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal-dow{font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:rgba(2,33,30,.4);text-align:center;padding-bottom:6px}
+.cal-d{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:7px;font-size:.95rem;border:0;background:transparent;color:var(--ink);cursor:pointer;font-family:var(--body)}
+.cal-d.empty{visibility:hidden}
+.cal-d.off{cursor:default;text-decoration:line-through}
+.cal-d.pasado{color:rgba(2,33,30,.22)}
+.cal-d.libre:hover{background:rgba(91,200,200,.3)}
+.cal-d.rango{background:rgba(91,200,200,.32)}
+.cal-d.sel{background:var(--green-deep);color:#fff}
+/* Van últimos a propósito: el rojo gana sobre .sel y .rango. */
+.cal-d.ocupado{color:#b85c68;background:rgba(229,86,107,.1);text-decoration-color:rgba(184,92,104,.55)}
+.cal-d.ocupado.conflicto{color:#fff;background:#c9364b;text-decoration-color:rgba(255,255,255,.75)}
+/* Ocupado pero elegible como salida: se le devuelve el cursor y un borde que
+   invita, sin dejar de ser rojo — esa noche sigue tomada. */
+.cal-d.ocupado.puede-salida{cursor:pointer;box-shadow:inset 0 0 0 2px rgba(31,110,110,.45)}
+.cal-d.ocupado.puede-salida:hover{box-shadow:inset 0 0 0 2px var(--green-deep)}
+.cal-d.ocupado.salida{color:#fff;background:var(--green-deep);text-decoration-color:rgba(255,255,255,.6)}
+.cal-leyenda{display:flex;gap:16px;justify-content:center;margin-top:12px;font-size:.68rem;color:rgba(2,33,30,.5);flex-wrap:wrap}
+.cal-leyenda i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.cal-stamp{margin-top:7px;font-size:.66rem;color:rgba(2,33,30,.35);text-align:center}
+.veredicto{margin-top:16px;padding:14px 16px;border-radius:10px;font-size:.92rem;text-align:left}
+
+/* La sección de reservar tiene que entrar ENTERA — título, calendario y
+   veredicto — sin scrollear. Se va recortando por escalones de altura. */
+@media (max-height:1000px){
+  #disponibilidad .head{margin-bottom:20px}
+  #disponibilidad .head h2{font-size:clamp(1.5rem,3.2vw,2.2rem)}
+  #disponibilidad .head > p:last-child{margin-top:10px;font-size:.85rem;line-height:1.45}
+}
+@media (max-height:600px){
+  /* Último recorte: el eyebrow es decorativo, el título ya dice de qué va. */
+  #disponibilidad .head .eyebrow{display:none}
+  #disponibilidad .head h2{font-size:1.2rem}
+}
+@media (max-height:790px){
+  /* La descripción es contexto, no instrucción: el calendario se explica
+     solo. Es lo primero que sobra cuando falta alto. */
+  #disponibilidad .head > p:last-child{display:none}
+  #disponibilidad .head{margin-bottom:14px}
+}
+
+/* Ventana baja (o zoom alto): se recorta todo lo prescindible para que el
+   veredicto y sus botones sigan entrando sin scrollear. */
+@media (max-height:820px){
+  .card-form{padding:18px}
+  .cal{margin-top:12px}
+  .cal-top{margin-bottom:6px}
+  .cal-top b{font-size:1.05rem}
+  .cal-leyenda{margin-top:8px;font-size:.62rem;gap:12px}
+  .cal-stamp{display:none}
+  .veredicto{margin-top:12px;padding:12px 14px;font-size:.86rem}
+  .veredicto-btns{margin-top:12px;gap:8px}
+  .veredicto .btn{padding:10px 18px;font-size:.82rem}
+}
+
+/* Muy baja: se va la leyenda (los colores se entienden solos) y todo lo demás
+   al mínimo legible. */
+@media (max-height:700px){
+  .card-form{padding:12px}
+  .cal-leyenda{display:none}
+  .cal{margin-top:6px;max-width:min(336px, 30vh)}
+  .cal-top{margin-bottom:4px}
+  .cal-top b{font-size:.95rem}
+  .cal-nav{width:26px;height:26px}
+  #disponibilidad .head{margin-bottom:10px}
+  #disponibilidad .head h2{font-size:1.35rem}
+  #disponibilidad .card-form label{margin-bottom:4px;font-size:.68rem}
+  #disponibilidad .card-form select{padding:8px 0;font-size:.9rem}
+  .veredicto{margin-top:8px;padding:9px 11px;font-size:.78rem}
+  .veredicto-btns{margin-top:8px;gap:6px}
+  .veredicto .btn{padding:7px 12px;font-size:.74rem}
+}
+.veredicto.ok{background:rgba(91,200,200,.2)}
+.veredicto.no{background:rgba(229,86,107,.1);color:#8a2436}
+.veredicto.info{background:rgba(2,33,30,.04);color:rgba(2,33,30,.65)}
+.veredicto-btns{display:flex;flex-wrap:wrap;gap:12px;margin-top:16px}
+.veredicto .btn{padding:12px 24px;box-shadow:none;margin-top:0}
+@media (max-width:520px){ .veredicto-btns .btn{flex:1 1 100%;justify-content:center} }
+
+/* ---------- responsive ---------- */
+@media (max-width:900px){
+  .nav-links{display:none;position:absolute;top:var(--nav-h);left:0;right:0;flex-direction:column;align-items:stretch;gap:0;background:var(--turq);padding:8px 20px 20px}
+  .nav-links.open{display:flex}
+  .nav-links a{padding:14px 0;border-top:1px solid rgba(2,33,30,.15)}
+  .nav-cta{text-align:center;margin-top:12px;border-top:0}
+  .burger{display:block}
+  .sec{padding:64px 20px}
+  .head{margin-bottom:40px}
+  .searchbar{flex-direction:column}
+  .searchbar button{align-self:stretch}
+  .card-form{padding:24px}
+  .card-form .row{grid-template-columns:1fr;gap:16px}
+  .split,.split.invertido{flex-direction:column;min-height:0}
+  .split .media,.split .copy{width:100%}
+  .split .media img{height:288px}
+  .split .copy>div{padding:48px 32px}
+  .bento{grid-template-columns:1fr}
+  .tile.wide{grid-column:span 1}
+  .villas{grid-template-columns:1fr}
+  .acts-hero{grid-template-columns:1fr}
+  .acts{grid-template-columns:1fr}
+  .wave{height:64px}
+  .quote,.cta{padding:64px 20px}
+  .btns{flex-direction:column}
+}
+@media (min-width:901px) and (max-width:1100px){
+  .acts{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-in">
+    <a class="brand" href="#top">ATLANTIS VILLAGES</a>
+    <div class="nav-links" id="menu">
+      <a href="#alojamiento">Alojamiento</a>
+      <a href="#experiencias">Experiencias</a>
+      <a href="#galeria">Galería</a>
+      <a href="#contacto">Contacto</a>
+      <a class="nav-cta" href="#disponibilidad">Reservar</a>
+    </div>
+    <button class="burger" id="burger" aria-label="Menú" aria-expanded="false">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+    </button>
+  </div>
+</nav>
+
+<main id="top">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <video src="fotos/hero.mp4" poster="fotos/hero-poster.png" autoplay muted loop playsinline></video>
+    <div class="scrim"></div>
+    <div class="hero-in">
+      <p class="eyebrow">Playa Bonita · Tela, Honduras</p>
+      <h1 class="display">El Caribe que siempre imaginaste</h1>
+      <p class="lead">Villas privadas a una cuadra del mar, con piscinas propias y la hospitalidad que nos ha hecho Superanfitrión en Airbnb.</p>
+
+      <form class="searchbar" data-consulta>
+        <div class="f"><label>Llegada</label><input type="date" name="llegada"></div>
+        <div class="f"><label>Salida</label><input type="date" name="salida"></div>
+        <div class="f"><label>Unidad</label>
+          <select name="unidad">
+            <option value="">Seleccionar</option>
+            <option>Townhouse</option><option>Beach House</option><option>Loft</option><option>Habitación</option>
+          </select>
+        </div>
+        <button type="submit">Ver disponibilidad</button>
+      </form>
+    </div>
+    <div class="scroll-hint">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+    </div>
+  </section>
+
+  <!-- ============ TRES LÁMINAS APILADAS ============
+       Cada una se pega arriba y la siguiente la tapa al scrollear, así
+       se reemplazan en el sitio en vez de desfilar una tras otra. -->
+  <div class="stack" id="galeria">
+
+    <section class="slide">
+      <div class="lamina rev zoom">
+        <div class="wrap w-3xl center">
+          <p class="eyebrow">Bienvenido a Atlantis Villages</p>
+          <h2 class="display italic h2">Un refugio privado a una cuadra del mar, donde cada villa tiene su propia piscina y cada huésped se siente en casa</h2>
+          <p style="color:rgba(2,33,30,.7);margin:32px auto 0;max-width:42rem">Townhouses, Beach Houses, Lofts y Habitaciones para grupos de 1 a 70 personas, en el corazón de Playa Bonita, Tela.</p>
+        </div>
+        <div class="stats" id="stats"></div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="lamina split rev zoom">
+        <div class="media"><img src="fotos/ubicacion-playa.webp" alt="Camino hacia la playa de Tela, Honduras"></div>
+        <div class="copy"><div>
+          <p class="eyebrow">Ubicación</p>
+          <h3 class="display h3">A una cuadra del mar</h3>
+          <p class="txt">Playa Bonita es uno de los tramos de costa más bellos del Caribe hondureño. El complejo está a una cuadra de la playa — un paseo corto y cómodo — y Punta Sal, Lancetilla y el centro de Tela, a minutos en carro.</p>
+        </div></div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="lamina split invertido rev zoom">
+        <div class="media"><img src="fotos/piscina-atardecer.webp" alt="Piscina privada al atardecer en Atlantis Villages"></div>
+        <div class="copy"><div>
+          <p class="eyebrow">Piscinas privadas</p>
+          <h3 class="display h3">Cada villa, su propio paraíso</h3>
+          <p class="txt">Townhouses y Beach Houses incluyen piscina privada — sin compartir, sin reservar turno. Solo tú, tu grupo y el sonido del agua.</p>
+        </div></div>
+      </div>
+    </section>
+
+  </div>
+
+  <div class="wave" style="background:var(--bone-alt)"><svg viewBox="0 0 1440 100" preserveAspectRatio="none"><path d="M0,0 C480,80 960,80 1440,0 L1440,0 L0,0 Z" fill="#F9F9F7"/></svg></div>
+
+  <!-- ============ DISPONIBILIDAD ============ -->
+  <section id="disponibilidad" class="sec sec-alt">
+    <div class="wrap w-3xl center">
+      <!-- .head como en el resto de secciones: es lo que usa la navegación
+           para saber dónde empieza el contenido visible. -->
+      <div class="head">
+        <p class="eyebrow">Disponibilidad</p>
+        <h2 class="display italic h2">¿Hay espacio en tus fechas?</h2>
+        <p style="color:rgba(2,33,30,.6);margin:20px auto 0;max-width:36rem">Verifica disponibilidad real al instante. La reserva y el pago siempre se completan en Airbnb o por WhatsApp — aquí solo confirmamos si hay cupo.</p>
+      </div>
+
+      <div class="card-form" id="tarjeta">
+        <div class="panel">
+          <div class="sel">
+            <label>Unidad</label>
+            <select id="cal-unidad"><!-- se llena desde VILLAS --></select>
+          </div>
+          <div id="veredicto"></div>
+        </div>
+        <div class="cal" id="cal"></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="wave" style="background:var(--bone)"><svg viewBox="0 0 1440 100" preserveAspectRatio="none"><path d="M0,0 C480,80 960,80 1440,0 L1440,0 L0,0 Z" fill="#f0f0ec"/></svg></div>
+
+  <!-- ============ EXPERIENCIAS ============ -->
+  <section id="experiencias" class="sec sec-bone">
+    <div class="wrap w-6xl">
+      <div class="head">
+        <p class="eyebrow">La experiencia Atlantis</p>
+        <h2 class="display italic h2">Todo lo que necesitas, sin salir del complejo</h2>
+      </div>
+      <div class="bento" id="bento"></div>
+    </div>
+  </section>
+
+  <div class="wave" style="background:var(--bone-alt)"><svg viewBox="0 0 1440 100" preserveAspectRatio="none"><path d="M0,0 C480,80 960,80 1440,0 L1440,0 L0,0 Z" fill="#F9F9F7"/></svg></div>
+
+  <!-- ============ ALOJAMIENTO ============ -->
+  <section id="alojamiento" class="sec sec-alt">
+    <div class="wrap w-6xl">
+      <div class="head">
+        <p class="eyebrow">Alojamiento</p>
+        <h2 class="display italic h2">Encuentra tu espacio</h2>
+      </div>
+      <div class="villas" id="villas"></div>
+    </div>
+  </section>
+
+  <div class="wave" style="background:var(--bone)"><svg viewBox="0 0 1440 100" preserveAspectRatio="none"><path d="M0,0 C480,80 960,80 1440,0 L1440,0 L0,0 Z" fill="#f0f0ec"/></svg></div>
+
+  <!-- ============ QUE HACER EN TELA ============ -->
+  <section class="sec sec-bone">
+    <div class="wrap w-6xl">
+      <div class="head">
+        <p class="eyebrow">Qué hacer en Tela</p>
+        <h2 class="display italic h2">Aventuras que te esperan</h2>
+      </div>
+      <div class="acts-hero">
+        <div class="act-big">
+          <img src="fotos/punta-sal.webp" alt="Punta Sal, Tela Honduras">
+          <div class="grad"></div>
+          <div class="cap"><h3>Punta Sal</h3><p>Parque Nacional</p></div>
+        </div>
+        <div class="act-big">
+          <img src="fotos/lancetilla.webp" alt="Jardín Botánico Lancetilla">
+          <div class="grad"></div>
+          <div class="cap"><h3>Lancetilla</h3><p>Jardín Botánico</p></div>
+        </div>
+      </div>
+      <div class="acts" id="acts"></div>
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section class="sec sec-bone" style="padding-top:0">
+    <div class="wrap w-2xl">
+      <div class="head">
+        <p class="eyebrow">Preguntas frecuentes</p>
+        <h2 class="display italic h2">Lo que necesitas saber</h2>
+      </div>
+      <div class="faq" id="faq"></div>
+    </div>
+  </section>
+
+  <!-- ============ TESTIMONIAL ============ -->
+  <section class="quote">
+    <div class="blob b1"></div><div class="blob b2"></div>
+    <div class="in">
+      <div class="stars" id="stars"></div>
+      <blockquote>"El lugar más bonito en el que nos hemos quedado en Tela. La piscina privada y la atención del anfitrión hicieron que fuera inolvidable."</blockquote>
+      <div class="who">
+        <p>Reseña verificada en Airbnb</p>
+        <p id="cita-datos">4.91★ con 677 evaluaciones</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section class="cta">
+    <div class="in">
+      <h2 class="display italic h2">¿Listo para tu escape al Caribe?</h2>
+      <p>La reserva se completa en Airbnb o por WhatsApp — nosotros solo te ayudamos a encontrar el momento perfecto.</p>
+      <div class="btns">
+        <a class="btn ab" id="cta-airbnb" href="https://www.airbnb.com/users/profile/1469798842391994346" target="_blank" rel="noopener noreferrer">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+          Reservar en Airbnb
+        </a>
+        <a class="btn wa" href="https://wa.me/50432326429" target="_blank" rel="noopener noreferrer">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+          WhatsApp directo
+        </a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer id="contacto">
+  <div class="wrap w-6xl">
+    <div class="foot-top">
+      <div>
+        <p class="brand" style="margin:0">ATLANTIS VILLAGES</p>
+        <p class="loc">Playa Bonita · Tela, Honduras</p>
+      </div>
+      <div class="foot-links">
+        <a href="tel:+50432326429">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          +504 3232-6429
+        </a>
+        <a href="https://www.instagram.com/atlantisvillages" target="_blank" rel="noopener noreferrer">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+          @atlantisvillages
+        </a>
+        <a id="foot-airbnb" href="https://www.airbnb.com/users/profile/1469798842391994346" target="_blank" rel="noopener noreferrer">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+          Airbnb
+        </a>
+      </div>
+    </div>
+    <div class="foot-bot">
+      <p>© 2026 Atlantis Villages. Todos los derechos reservados.</p>
+      <a href="#">Política de privacidad</a>
+    </div>
+  </div>
+</footer>
+
+<script src="disponibilidad.js"></script>
+<script src="stats.js"></script>
+<script>
+/* =====================================================================
+   DATOS — editá solo esta sección
+   ===================================================================== */
+
+const WHATSAPP = "50432326429";
+
+/* Cada tipo agrupa N unidades. Cada unidad = un listing de Airbnb con su
+   propio calendario. Un tipo con una sola unidad es simplemente unidades:[uno].
+   El .ics de cada unidad se agrega cuando enganchemos la disponibilidad. */
+const VILLAS = [
+  { nombre:"Townhouse",  foto:"fotos/townhouse.webp",  alt:"Townhouse en Atlantis Villages",
+    specs:[["users","10–12 personas"],["bed","3 dormitorios"],["bath","2.5 baños"],["waves","Piscina privada"]],
+    precios:[260,385,550], deposito:400,
+    unidades:[
+      { id:"1000767203641214772", nombre:"Neptun" },
+      { id:"1001578383448277292", nombre:"Poseidon" }
+    ] },
+
+  { nombre:"Beach House", foto:"fotos/beach-house.webp", alt:"Beach House en Atlantis Villages",
+    specs:[["users","6–8 personas"],["bed","2 dormitorios"],["bath","2 baños"],["waves","Piscina privada"]],
+    precios:[180,285,370], deposito:400,
+    unidades:[
+      { id:"1243126377088285474", nombre:"BH1" },
+      { id:"1242956510290064184", nombre:"BH2" }
+    ] },
+
+  { nombre:"Loft", foto:"fotos/loft.webp", alt:"Loft en Atlantis Villages",
+    specs:[["users","1–4 personas"],["bed","1 dormitorio"],["bath","1 baño"],["waves","Vista al mar"]],
+    precios:[80,120,200], deposito:100,
+    unidades:[
+      { id:"1259801398338647733", nombre:"Loft 1" }
+    ] },
+
+  { nombre:"Habitación", foto:"fotos/habitacion.webp", alt:"Habitación en Atlantis Villages",
+    specs:[["users","1–4 personas"],["bed","1 dormitorio"],["bath","1 baño"],["waves","Amenidades de hotel"]],
+    precios:[65,100,165], deposito:100,
+    unidades:[
+      { id:"1257566351282380636", nombre:"Hab 1" },
+      { id:"1263164443428189188", nombre:"Hab 2" },
+      { id:"1259698504611212201", nombre:"Hab 3" },
+      { id:"1261125295591084048", nombre:"Hab 4" },
+      { id:"1263182861774194266", nombre:"Hab 5" },
+      { id:"1261122689607455594", nombre:"Hab 6" }
+    ] }
+];
+
+const EXPERIENCIAS = [
+  { titulo:"Tienda 24/7",      sub:"Bebidas, snacks, hielo",                                   foto:"fotos/tienda.webp" },
+  { titulo:"Kit de playa",     sub:"Sombrilla, sillas, carrito — se renta",                    foto:"fotos/kit-playa.webp" },
+  { titulo:"Masajes",          sub:"Relajante, piedras calientes, deportivo, prenatal y más",  foto:"fotos/masajes.webp", wide:true },
+  { titulo:"Coffee Corner",    sub:"Rincón exterior de café",                                  foto:"fotos/coffee-corner.webp" },
+  { titulo:"Planta eléctrica", sub:"Respaldo — sin cortes de luz",                             foto:"fotos/planta-electrica.webp" }
+];
+
+const ACTIVIDADES = [
+  ["pin",   "Punta Sal",                  "Parque nacional, tour en lancha por manglares y playas vírgenes"],
+  ["trees", "Jardín Botánico Lancetilla", "Uno de los jardines botánicos tropicales más grandes de América"],
+  ["fish",  "Acuario de Tela",            "Fauna marina del Caribe hondureño"],
+  ["waves", "Snorkel y Jet Ski",          "Deportes acuáticos en las aguas cristalinas de la bahía"],
+  ["bike",  "Cuatrimotos",                "Recorridos por senderos y playas cercanas"],
+  ["ship",  "Banana boat y paseos en lancha", "Diversión en el agua para toda la familia"],
+  ["food",  "Restaurantes y vida nocturna",   "Gastronomía garífuna, mariscos frescos y discotecas cercanas"]
+];
+
+/* Las respuestas estaban colapsadas en el HTML guardado — no se pudieron recuperar.
+   Reemplazá cada "PENDIENTE" con el texto real. */
+const FAQ = [
+  ["¿A qué hora es el check-in y check-out?", "PENDIENTE"],
+  ["¿Cuál es la política de cancelación?",    "PENDIENTE"],
+  ["¿Cuál es el depósito de seguridad?",      "PENDIENTE"],
+  ["¿El complejo está frente al mar?",        "PENDIENTE"],
+  ["¿Aceptan mascotas?",                      "PENDIENTE"],
+  ["¿Cómo se paga la reserva?",               "PENDIENTE"]
+];
+
+/* =====================================================================
+   RENDER
+   ===================================================================== */
+
+const I = {
+  users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+  bed:'<path d="M2 20v-8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v8"/><path d="M4 10V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4"/><path d="M12 4v6"/><path d="M2 18h20"/>',
+  bath:'<path d="M10 4 8 6"/><path d="M17 19v2"/><path d="M2 12h20"/><path d="M7 19v2"/><path d="M9 5 7.621 3.621A2.121 2.121 0 0 0 4 5v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5"/>',
+  waves:'<path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/>',
+  pin:'<path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/>',
+  trees:'<path d="M10 10v.2A3 3 0 0 1 8.9 16H5a3 3 0 0 1-1-5.8V10a3 3 0 0 1 6 0Z"/><path d="M7 16v6"/><path d="M13 19v3"/><path d="M12 19h8.3a1 1 0 0 0 .7-1.7L18 14h.3a1 1 0 0 0 .7-1.7L16 9h.2a1 1 0 0 0 .8-1.7L13 3l-1.4 1.5"/>',
+  fish:'<path d="M6.5 12c.94-3.46 4.94-6 8.5-6 3.56 0 6.06 2.54 7 6-.94 3.47-3.44 6-7 6s-7.56-2.53-8.5-6Z"/><path d="M18 12v.5"/><path d="M16 17.93a9.77 9.77 0 0 1 0-11.86"/><path d="M7 10.67C7 8 5.58 5.97 2.73 5.5c-1 1.5-1 5 .23 6.5-1.24 1.5-1.24 5-.23 6.5C5.58 18.03 7 16 7 13.33"/><path d="M10.46 7.26C10.2 5.88 9.17 4.24 8 3h5.8a2 2 0 0 1 1.98 1.67l.23 1.4"/><path d="m16.01 17.93-.23 1.4A2 2 0 0 1 13.8 21H9.5a5.96 5.96 0 0 0 1.49-3.98"/>',
+  bike:'<circle cx="18.5" cy="17.5" r="3.5"/><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="15" cy="5" r="1"/><path d="M12 17.5V14l-3-3 4-3 2 3h2"/>',
+  ship:'<path d="M12 10.189V14"/><path d="M12 2v3"/><path d="M19 13V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6"/><path d="M19.38 20A11.6 11.6 0 0 0 21 14l-8.188-3.639a2 2 0 0 0-1.624 0L3 14a11.6 11.6 0 0 0 2.81 7.76"/><path d="M2 21c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1s1.2 1 2.5 1c2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/>',
+  food:'<path d="m16 2-2.3 2.3a3 3 0 0 0 0 4.2l1.8 1.8a3 3 0 0 0 4.2 0L22 8"/><path d="M15 15 3.3 3.3a4.2 4.2 0 0 0 0 6l7.3 7.3c.7.7 2 .7 2.8 0L15 15Zm0 0 7 7"/><path d="m2.1 21.8 6.4-6.3"/><path d="m19 5-7 7"/>',
+  chev:'<path d="m6 9 6 6 6-6"/>',
+  star:'<path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/>'
+};
+const svg = (k,s=14,fill="none") =>
+  `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="${fill}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${I[k]}</svg>`;
+
+document.getElementById("villas").innerHTML = VILLAS.map(v => `
+  <article class="villa">
+    <div class="ph">
+      <img src="${v.foto}" alt="${v.alt}" loading="lazy">
+      <div class="grad"></div>
+      <h3>${v.nombre}</h3>
+    </div>
+    <div class="bd">
+      <div class="features">${v.specs.map(([i,t]) => `<div>${svg(i,17)} ${t}</div>`).join("")}</div>
+      <p class="dep">Depósito de seguridad: $${v.deposito} · Limpieza incluida</p>
+      <button class="btn-ver" data-tipo="${v.nombre}">Ver disponibilidad</button>
+    </div>
+  </article>`).join("");
+
+/* Cada tarjeta baja al calendario con su tipo ya elegido. No enlaza a Airbnb
+   directo porque un tipo agrupa varias unidades y no se sabe cuál ofrecer
+   hasta tener fechas. */
+document.querySelectorAll(".btn-ver").forEach(b => {
+  b.addEventListener("click", () => {
+    const sel = document.getElementById("cal-unidad");
+    sel.value = b.dataset.tipo;
+    sel.dispatchEvent(new Event("change"));
+    irASeccion("disponibilidad");
+  });
+});
+
+document.getElementById("bento").innerHTML = EXPERIENCIAS.map(e => `
+  <div class="tile${e.wide ? " wide" : ""}">
+    <img src="${e.foto}" alt="${e.titulo}" loading="lazy">
+    <div class="grad"></div>
+    <div class="cap"><h3>${e.titulo}</h3><p>${e.sub}</p></div>
+  </div>`).join("");
+
+document.getElementById("acts").innerHTML = ACTIVIDADES.map(([ic,t,d]) => `
+  <div class="act">
+    <div class="ic">${svg(ic,20)}</div>
+    <div><h4>${t}</h4><p>${d}</p></div>
+  </div>`).join("");
+
+document.getElementById("faq").innerHTML = FAQ.map(([q,a]) => `
+  <details>
+    <summary>${q} ${svg("chev",16)}</summary>
+    <div class="ans">${a}</div>
+  </details>`).join("");
+
+document.getElementById("stars").innerHTML = Array(5).fill(svg("star",20,"currentColor")).join("");
+
+/* Los stats vienen de stats.js, que regenera el cron cada 2 semanas.
+   Los valores de respaldo son los reales al 8/8/2026, por si el archivo
+   falta o el scrape estuvo caído: nunca se muestra un cero. */
+const S = window.STATS || {};
+const RATING   = S.rating      ?? 4.91;
+const RESENAS  = S.resenas     ?? 677;
+const PROPS    = S.propiedades ?? 11;
+
+const miniEstrellas = Array(5).fill(svg("star", 13, "currentColor")).join("");
+
+document.getElementById("stats").innerHTML = [
+  [RATING,  "Rating Airbnb", true],
+  [RESENAS, "Reseñas",       false],
+  [PROPS,   "Propiedades",   false]
+].map(([n,l,estrellas]) =>
+  `<div><b>${n}</b><span class="mini-stars">${estrellas ? miniEstrellas : ""}</span><span>${l}</span></div>`
+).join("");
+
+/* El testimonial repetía 4.94 y 145 escritos a mano — los números viejos.
+   Ahora sale de la misma fuente que los stats y no se pueden contradecir. */
+const pieCita = document.getElementById("cita-datos");
+if (pieCita) pieCita.textContent = `${RATING}★ con ${RESENAS} evaluaciones`;
+
+/* =====================================================================
+   CONSULTA DE DISPONIBILIDAD
+   Hoy manda a WhatsApp con las fechas precargadas.
+   Cuando enganchemos el iCal, acá va el chequeo contra las fechas
+   bloqueadas antes de abrir WhatsApp.
+   ===================================================================== */
+function airbnbURL(id, llegada, salida, adultos) {
+  const p = new URLSearchParams();
+  if (llegada) p.set("check_in", llegada);
+  if (salida)  p.set("check_out", salida);
+  if (adultos) p.set("adults", adultos);
+  const q = p.toString();
+  return `https://www.airbnb.com/rooms/${id}${q ? "?" + q : ""}`;
+}
+
+function whatsappURL(llegada, salida, unidad) {
+  let msg = "Hola, quisiera consultar disponibilidad en Atlantis Villages";
+  if (unidad) msg += ` para ${unidad}`;
+  if (llegada && salida) msg += ` del ${llegada} al ${salida}`;
+  return `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg + ".")}`;
+}
+
+const DISP = window.DISPONIBILIDAD || { actualizado:null, unidades:{} };
+
+/* Todo en UTC a propósito: con fechas locales, en Honduras (UTC-6) cada día
+   se corre uno para atrás al pasar por toISOString(). */
+const iso     = d => d.toISOString().slice(0,10);
+const parseF  = s => new Date(s + "T00:00:00Z");
+const addDias = (d,n) => { const x = new Date(d); x.setUTCDate(x.getUTCDate()+n); return x; };
+/* Toma el día del calendario local del visitante y lo ancla a medianoche UTC.
+   Con iso(new Date()) directo, en Honduras (UTC-6) después de las 6pm ya
+   contaba como mañana y el día de hoy se marcaba como pasado. */
+const hoyUTC  = () => { const d = new Date(); return new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())); };
+const HOY     = iso(hoyUTC());
+
+const MESES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+const DOW   = ["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"];
+
+let calVilla = null, calMes = null, selIn = null, selOut = null;
+
+/* El visitante elige un TIPO. La unidad concreta la busca el sitio según las
+   fechas y se la asigna. Nadie tiene que saber que existe "Hab 5".
+
+   Sólo entran las unidades con calendario cargado. Una unidad sin datos
+   simplemente no se ofrece — nunca se la propone a nadie, así que no hay
+   riesgo. Exigir que TODAS tuvieran datos apagaba el tipo entero por una
+   sola unidad sin conectar, que es peor y no más seguro. */
+function enJuego() {
+  return calVilla ? calVilla.unidades.filter(u => DISP.unidades[u.id]) : [];
+}
+
+/* Un día está ocupado sólo si TODAS las unidades en juego lo están.
+   Con 6 habitaciones y 1 libre, el día sigue siendo reservable. */
+function bloqueadasDe() {
+  const us = enJuego();
+  if (!us.length) return null;          // ninguna conectada todavía
+  const sets = us.map(u => new Set(DISP.unidades[u.id]));
+  return new Set([...sets[0]].filter(f => sets.every(s => s.has(f))));
+}
+
+/* Noches ocupadas = [entrada, salida-1]. El día de salida queda libre para
+   que entre el siguiente huésped, igual que el DTEND exclusivo del iCal. */
+function nochesDe(entrada, salida) {
+  const n = [];
+  for (let d = parseF(entrada); d < parseF(salida); d = addDias(d,1)) n.push(iso(d));
+  return n;
+}
+
+function unidadesLibres(entrada, salida) {
+  const noches = nochesDe(entrada, salida);
+  /* Rango invertido o de cero noches: no hay nada que reservar. Sin esto,
+     .every() sobre una lista vacía da true y decía "disponible, 0 noches". */
+  if (!noches.length) return [];
+  return enJuego().filter(u => {
+    const b = DISP.unidades[u.id];
+    return b && noches.every(n => !b.includes(n));
+  });
+}
+
+function renderCal() {
+  const cont = document.getElementById("cal");
+  const vd   = document.getElementById("veredicto");
+
+  /* Las dos columnas se abren sólo si hay calendario que poner a la derecha.
+     Si no, la tarjeta quedaba abierta con medio recuadro en blanco. */
+  const abrir = v => tarjeta.classList.toggle("abierto", v);
+
+  if (!calVilla) { cont.innerHTML = ""; vd.innerHTML = ""; abrir(false); return; }
+
+  const bloq = bloqueadasDe();
+  if (!bloq) {
+    cont.innerHTML = "";
+    abrir(false);
+    vd.innerHTML = `<div class="veredicto info">Todavía no hay calendario conectado para ${calVilla.nombre}. Escribinos y te confirmamos al momento.<br>
+      <a class="btn wa" href="${whatsappURL("","",calVilla.nombre)}" target="_blank" rel="noopener">WhatsApp directo</a></div>`;
+    return;
+  }
+
+  abrir(true);
+
+  const anio = calMes.getUTCFullYear(), mes = calMes.getUTCMonth();
+  const dias    = new Date(Date.UTC(anio, mes+1, 0)).getUTCDate();
+  const offset  = (new Date(Date.UTC(anio, mes, 1)).getUTCDay() + 6) % 7;
+  const hoy     = hoyUTC();
+  const primerMes = new Date(Date.UTC(hoy.getUTCFullYear(), hoy.getUTCMonth(), 1));
+
+  let celdas = DOW.map(d => `<div class="cal-dow">${d}</div>`).join("");
+  for (let i = 0; i < offset; i++) celdas += `<button class="cal-d empty"></button>`;
+
+  for (let d = 1; d <= dias; d++) {
+    const fecha = new Date(Date.UTC(anio, mes, d));
+    const f = iso(fecha);
+    const pasado = fecha < hoy, ocupado = bloq.has(f);
+
+    /* Un día ocupado SÍ sirve como salida: si otra reserva entra el 16, el
+       huésped anterior se va la mañana del 16 y no usa esa noche. Sólo se
+       habilita cuando ya hay llegada elegida y la fecha es posterior. */
+    const eligiendoSalida = !!selIn && !selOut;
+    const sirveDeSalida = ocupado && eligiendoSalida && f > selIn;
+    const clickeable = !pasado && (!ocupado || sirveDeSalida);
+
+    /* Reservado gana sobre pasado: si está tomado, va en rojo siempre. */
+    let cls = "cal-d " + (ocupado ? "off ocupado" : pasado ? "off pasado" : "libre");
+
+    /* Un día tomado se queda rojo aunque caiga dentro del rango elegido.
+       Si no, el buscador del hero (donde se puede escribir cualquier fecha)
+       lo pintaba de verde y parecía disponible. */
+    if (ocupado) {
+      /* Rojo intenso si además choca con las noches que elegiste.
+         f < selOut y no <=: la noche del día de salida no es tuya, así que
+         que esté tomada no te bloquea nada. */
+      if (selIn && selOut && f >= selIn && f < selOut) cls += " conflicto";
+      else if (f === selOut) cls += " salida";          // elegido como salida
+      else if (sirveDeSalida) cls += " puede-salida";   // ofrecerlo como salida
+    } else {
+      if (f === selIn || f === selOut) cls += " sel";
+      else if (selIn && selOut && f > selIn && f < selOut) cls += " rango";
+    }
+
+    const titulo = sirveDeSalida ? ' title="Disponible como fecha de salida"' : "";
+    celdas += `<button class="${cls}" data-f="${f}"${titulo}${clickeable ? "" : " disabled"}>${d}</button>`;
+  }
+
+  const sinPrev = calMes <= primerMes;
+  cont.innerHTML = `
+    <div class="cal-top">
+      <button class="cal-nav" id="cal-prev"${sinPrev ? " disabled" : ""} aria-label="Mes anterior">‹</button>
+      <b>${MESES[mes]} ${anio}</b>
+      <button class="cal-nav" id="cal-next" aria-label="Mes siguiente">›</button>
+    </div>
+    <div class="cal-grid">${celdas}</div>
+    <div class="cal-leyenda">
+      <span><i style="background:rgba(91,200,200,.32)"></i>Tus fechas</span>
+      <span><i style="background:rgba(229,86,107,.22)"></i>Reservado</span>
+      <span><i style="background:#c9364b"></i>Choca con tus fechas</span>
+    </div>
+    ${DISP.actualizado ? `<p class="cal-stamp">Disponibilidad actualizada el ${DISP.actualizado.slice(0,10)}</p>` : ""}`;
+
+  document.getElementById("cal-prev").onclick = () => { calMes = new Date(Date.UTC(anio, mes-1, 1)); renderCal(); };
+  document.getElementById("cal-next").onclick = () => { calMes = new Date(Date.UTC(anio, mes+1, 1)); renderCal(); };
+
+  /* Todas las celdas habilitadas, no sólo las libres: las ocupadas se
+     habilitan cuando pueden servir de salida. */
+  cont.querySelectorAll(".cal-d[data-f]:not([disabled])").forEach(b => {
+    b.onclick = () => {
+      const f = b.dataset.f;
+      /* Una fecha ocupada nunca puede ser llegada, así que si el clic no
+         califica como salida, no reinicia la selección: se ignora. */
+      const puedeSerLlegada = !b.classList.contains("ocupado");
+
+      if (selIn && !selOut && f > selIn) selOut = f;
+      else if (puedeSerLlegada) { selIn = f; selOut = null; }
+      else return;
+
+      renderCal();
+      veredicto();
+    };
+  });
+
+  if (selIn) veredicto();
+}
+
+function veredicto() {
+  const vd = document.getElementById("veredicto");
+  if (!calVilla || !selIn) { vd.innerHTML = ""; return; }
+
+  if (!selOut) {
+    vd.innerHTML = `<div class="veredicto info">Llegada el ${selIn}. Elegí ahora la fecha de salida.</div>`;
+    return;
+  }
+
+  if (selOut <= selIn) {
+    vd.innerHTML = `<div class="veredicto no">La salida tiene que ser posterior a la llegada.</div>`;
+    return;
+  }
+
+  const libres = unidadesLibres(selIn, selOut);
+  const noches = nochesDe(selIn, selOut).length;
+  const total = enJuego().length;
+
+  if (libres.length) {
+    /* Se asigna la primera libre. En Airbnb el huésped tendría que abrir los
+       6 anuncios uno por uno para encontrar cuál tiene sus fechas. */
+    const u = libres[0];
+    const quedan = total > 1
+      ? ` Queda${libres.length === 1 ? "" : "n"} ${libres.length} de ${total}.`
+      : "";
+    /* Las dos vías. El mensaje de WhatsApp ya lleva la unidad asignada y las
+       fechas: quien prefiere escribir no tiene que volver a explicar nada. */
+    const cual = total > 1 ? `${u.nombre} (${calVilla.nombre})` : calVilla.nombre;
+    const waReserva = `https://wa.me/${WHATSAPP}?text=` +
+      encodeURIComponent(`Hola, quisiera reservar ${cual} del ${selIn} al ${selOut}.`);
+
+    vd.innerHTML = `<div class="veredicto ok">
+      <b>Disponible</b> — ${calVilla.nombre}, ${noches} ${noches === 1 ? "noche" : "noches"}, del ${selIn} al ${selOut}.${quedan}
+      ${total > 1 ? `<br>Te asignamos <b>${u.nombre}</b>.` : ""}
+      <div class="veredicto-btns">
+        <a class="btn ab" href="${airbnbURL(u.id, selIn, selOut)}" target="_blank" rel="noopener">Reservar en Airbnb</a>
+        <a class="btn wa" href="${waReserva}" target="_blank" rel="noopener">Reservar por WhatsApp</a>
+      </div></div>`;
+  } else {
+    vd.innerHTML = `<div class="veredicto no">
+      <b>No hay disponibilidad</b> — ${total > 1 ? `las ${total} unidades de ${calVilla.nombre} están` : `${calVilla.nombre} está`} tomada${total > 1 ? "s" : ""} del ${selIn} al ${selOut}. Probá otras fechas.<br>
+      <a class="btn wa" href="${whatsappURL(selIn, selOut, calVilla.nombre)}" target="_blank" rel="noopener">Consultar por WhatsApp</a></div>`;
+  }
+}
+
+/* El selector se arma desde VILLAS para que las 11 unidades y sus 4 tipos
+   siempre estén en sincronía con los datos. */
+const selUnidad = document.getElementById("cal-unidad");
+selUnidad.innerHTML = `<option value="">Seleccionar tipo</option>` +
+  VILLAS.map(v => `<option value="${v.nombre}">${v.nombre}</option>`).join("");
+
+const tarjeta = document.getElementById("tarjeta");
+
+selUnidad.addEventListener("change", e => {
+  calVilla = VILLAS.find(v => v.nombre === e.target.value) || null;
+
+  // El abrir/cerrar de las dos columnas lo decide renderCal(), que es quien
+  // sabe si hay calendario o sólo el aviso de "sin conectar".
+
+  const h = hoyUTC();
+  calMes = new Date(Date.UTC(h.getUTCFullYear(), h.getUTCMonth(), 1));
+  selIn = selOut = null;
+  renderCal();
+});
+
+/* =====================================================================
+   NAVEGACIÓN POR SECCIONES
+   El ancla nativa siempre deja el borde de la sección pegado a la barra,
+   sin importar si el contenido entra o no: por eso "Alojamiento" caía con
+   las tarjetas cortadas abajo. Acá se mide la sección y se decide:
+   si entra completa se centra, y si no, se pega arriba con un respiro.
+   Se calcula en el momento del clic, así funciona igual con cualquier
+   zoom y cualquier alto de pantalla.
+   ===================================================================== */
+
+/* Sin excepciones: todas las secciones se muestran desde su título.
+   Antes Disponibilidad apuntaba a la tarjeta y el título quedaba fuera. */
+const FOCO = {};
+
+function irASeccion(id) {
+  const sec = document.getElementById(id);
+  if (!sec) return;
+
+  /* Se apunta al TÍTULO, no al borde de la sección. La sección arranca 76px
+     antes por su propio padding: apuntándole a ella, ese hueco queda siempre
+     debajo de la barra y no hay ajuste de scroll que lo saque. */
+  const objetivo =
+    (FOCO[id] && document.querySelector(FOCO[id])) ||
+    sec.querySelector(".head") ||
+    sec;   // la pila: se apunta a su borde para que el slide llene la pantalla
+
+  /* offsetTop y no getBoundingClientRect: al hacer clic, la sección destino
+     suele estar todavía sin revelar y su transform de entrada la desplaza
+     ~23px. Medir el rect daba una posición falsa y el título terminaba
+     detrás de la barra. offsetTop ignora los transform. */
+  let arriba = 0;
+  for (let n = objetivo; n; n = n.offsetParent) arriba += n.offsetTop;
+  const r = { top: arriba - window.scrollY };
+
+  const barra = parseInt(getComputedStyle(document.documentElement).getPropertyValue("--nav-h")) || 66;
+
+  /* La pila de láminas se alinea al borde de la pantalla, sin descontar la
+     barra: si se descuenta, el slide arranca 78px más abajo, no llena el alto
+     y asoma la lámina siguiente por debajo. Su texto ya viene con el espacio
+     de la barra en el padding. */
+  const esPila = objetivo === sec && sec.classList.contains("stack");
+
+  const y = esPila
+    ? r.top + window.scrollY
+    : r.top + window.scrollY - barra - 12;
+
+  window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
+}
+
+document.querySelectorAll('nav a[href^="#"], a.nav-cta[href^="#"]').forEach(a => {
+  const id = a.getAttribute("href").slice(1);
+  if (!id || !document.getElementById(id)) return;   // #top y demás siguen normal
+  a.addEventListener("click", e => {
+    e.preventDefault();
+    irASeccion(id);
+    history.replaceState(null, "", "#" + id);
+  });
+});
+
+/* Los inputs de fecha no aceptan días pasados, y la salida nunca antes de
+   la llegada. El navegador lo bloquea con min, pero igual se revalida al
+   enviar: min es una sugerencia y se puede escribir a mano. */
+document.querySelectorAll('form[data-consulta] input[type=date]').forEach(i => i.min = HOY);
+
+document.querySelectorAll('form[data-consulta] input[name=llegada]').forEach(inp => {
+  inp.addEventListener("change", () => {
+    const sal = inp.form.querySelector('input[name=salida]');
+    if (!sal) return;
+    sal.min = inp.value ? iso(addDias(parseF(inp.value), 1)) : HOY;
+    if (sal.value && sal.value <= inp.value) sal.value = "";
+  });
+});
+
+/* El buscador del hero alimenta el calendario en vez de abrir otra pestaña */
+document.querySelectorAll("form[data-consulta]").forEach(form => {
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+    const d = new FormData(form);
+    const unidad = d.get("unidad");
+    let llegada = d.get("llegada"), salida = d.get("salida");
+
+    if (llegada && llegada < HOY) llegada = "";          // fecha pasada
+    if (salida && (!llegada || salida <= llegada)) salida = "";  // salida antes o igual que llegada
+
+    if (unidad) {
+      const sel = document.getElementById("cal-unidad");
+      sel.value = unidad;
+      sel.dispatchEvent(new Event("change"));
+      if (llegada) {
+        selIn = llegada;
+        selOut = salida || null;
+        calMes = new Date(Date.UTC(+llegada.slice(0,4), +llegada.slice(5,7)-1, 1));
+        renderCal();
+      }
+    }
+    irASeccion("disponibilidad");
+  });
+});
+
+/* =====================================================================
+   REVELADO AL SCROLL
+   Corre después de que todo se pintó, porque villas, bento, actividades,
+   FAQ y stats se generan por JS y antes no existen en el DOM.
+   ===================================================================== */
+document.documentElement.classList.add("js");
+
+/* Las láminas se animan enteras (ya traen .rev .zoom en el HTML); no hay que
+   animar además su contenido, o se anidan dos transiciones y se ve raro. */
+const A_REVELAR = [
+  ".lamina", ".sec .head", ".villa", ".tile", ".act-big", ".act",
+  ".faq details", ".quote .in", ".cta .in", "#disponibilidad .card-form"
+];
+
+const reveables = [];
+A_REVELAR.forEach(sel => {
+  document.querySelectorAll(sel).forEach((el, i) => {
+    el.classList.add("rev");
+    // Escalonado dentro de cada grupo: entran en cascada, no todos de golpe.
+    if (i % 3 === 1) el.classList.add("d1");
+    if (i % 3 === 2) el.classList.add("d2");
+    reveables.push(el);
+  });
+});
+
+if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || !("IntersectionObserver" in window)) {
+  reveables.forEach(el => el.classList.add("visible"));
+} else {
+  const pendientes = new Set(reveables);
+
+  const mostrar = el => {
+    el.classList.add("visible");
+    pendientes.delete(el);
+  };
+
+  /* Red de seguridad. El observer solo por sí mismo puede dejar algo oculto
+     para siempre: el último bloque de la página no siempre alcanza a cruzar
+     el umbral porque ya no queda scroll por delante. Esta pasada revisa a
+     mano y no puede fallar. Se desengancha sola cuando no queda nada. */
+  const barrer = () => {
+    const limite = window.innerHeight + 120;   // un poco antes de entrar
+    for (const el of [...pendientes]) {
+      const r = el.getBoundingClientRect();
+      if (r.top < limite && r.bottom > -200) mostrar(el);
+    }
+    if (!pendientes.size) {
+      window.removeEventListener("scroll", barrer);
+      window.removeEventListener("resize", barrer);
+    }
+  };
+
+  const obs = new IntersectionObserver(entradas => {
+    entradas.forEach(e => {
+      if (!e.isIntersecting) return;
+      mostrar(e.target);
+      obs.unobserve(e.target);   // una sola vez: no queremos que parpadee al subir
+    });
+  }, { threshold: 0, rootMargin: "0px 0px 80px 0px" });
+
+  reveables.forEach(el => obs.observe(el));
+
+  window.addEventListener("scroll", barrer, { passive: true });
+  window.addEventListener("resize", barrer);
+  requestAnimationFrame(barrer);      // lo que ya está en pantalla al cargar
+
+  /* Último recurso: si algo sigue oculto a los 4 segundos, se muestra igual.
+     Prefiero perder una animación antes que perder contenido. */
+  setTimeout(() => { if (pendientes.size) [...pendientes].forEach(mostrar); }, 4000);
+}
+
+/* ---------- menú mobile ---------- */
+const burger = document.getElementById("burger"), menu = document.getElementById("menu");
+burger.addEventListener("click", () => {
+  const open = menu.classList.toggle("open");
+  burger.setAttribute("aria-expanded", String(open));
+});
+menu.addEventListener("click", e => {
+  if (e.target.closest("a")) { menu.classList.remove("open"); burger.setAttribute("aria-expanded","false"); }
+});
+</script>
+
+</body>
+</html>

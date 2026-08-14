@@ -1,0 +1,43 @@
+name: Actualizar disponibilidad
+
+on:
+  schedule:
+    - cron: "0 */2 * * *"   # cada 2 horas
+  workflow_dispatch:         # boton para correrlo a mano
+
+permissions:
+  contents: write
+
+# Si una corrida se solapa con la anterior, se cancela la vieja.
+concurrency:
+  group: disponibilidad
+  cancel-in-progress: true
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Bajar calendarios de Airbnb
+        env:
+          # Secret con formato: {"1000767203641214772":"https://...ics?s=...", ...}
+          # Settings -> Secrets and variables -> Actions -> New repository secret
+          ICS_URLS: ${{ secrets.ICS_URLS }}
+        run: node scripts/actualizar-disponibilidad.mjs
+
+      - name: Commitear si cambio algo
+        run: |
+          if [ -z "$(git status --porcelain disponibilidad.js)" ]; then
+            echo "Sin cambios en el calendario."
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add disponibilidad.js
+          git commit -m "Actualizar disponibilidad"
+          git push

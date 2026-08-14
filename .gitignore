@@ -1,0 +1,11 @@
+# NUNCA subir: los tokens ?s= de estos links dan acceso de lectura
+# a los calendarios de Airbnb.
+unidades.local.json
+unidades.local.ps1
+
+# Copias temporales que generan los scripts de captura
+_*.html
+
+node_modules/
+.DS_Store
+Thumbs.db
