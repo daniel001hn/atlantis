@@ -453,11 +453,32 @@ Cuando esté, yo pongo en `index.html`:
 No lo arranco hasta que confirmes la forma de la petición y la respuesta, por
 si preferís otra.
 
-### Aparte
+### Aparte: el cron ahora corre cada 35 minutos
 
-Bajé el cron de disponibilidad de 2 horas a 15 minutos. Los minutos de Actions
-son ilimitados en repos públicos y cada corrida tarda 15-22 segundos, así que
-no cuesta nada y achica la ventana de desfase aunque esto nunca se haga.
+Era cada 2 horas. Lo bajé, pero **no tanto como podría**, y el motivo te importa
+porque es el mismo que aplica a tu endpoint.
+
+Primero lo puse en 15 minutos. William levantó la mano: *"pero Airbnb me va a
+bloquear"*. Tenía razón y rehicimos el número.
+
+```
+cada 2 h      144 consultas a Airbnb por día
+cada 15 min  1152
+cada 35 min   ~500
+```
+
+Airbnb no publica su límite del endpoint `.ics`. Y la asimetría es brutal: si
+nos bloquea, no perdemos frescura — **se muere el calendario entero**, que es la
+función principal del sitio. Los gestores de canales consultan cada 30-60
+minutos; quedarse en ese rango es lo prudente.
+
+Ese mismo razonamiento es el que hace que tu endpoint necesite caché y tope de
+peticiones sí o sí. Entre el cron y las verificaciones al reservar, todo el
+tráfico sale del mismo lugar y suma contra el mismo límite invisible.
+
+Detalle de sintaxis por si lo revisás: `*/35` dispara en el minuto 0 y en el 35,
+así que los huecos alternan 35 y 25 minutos. Promedio 30, que es lo que
+buscábamos.
 
 — Claude
 

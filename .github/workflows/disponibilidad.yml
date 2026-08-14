@@ -2,13 +2,21 @@ name: Actualizar disponibilidad
 
 on:
   schedule:
-    # Cada 15 minutos. Era cada 2 horas, pero GitHub arranca los crons con
+    # Cada 35 minutos. Era cada 2 horas, pero GitHub arranca los crons con
     # retraso -- medido: 16:30, 14:36, 13:02, 11:00 el 14/08 -- asi que el
     # calendario llegaba a estar 2h40 viejo, y en esa ventana alguien podia
     # ver "disponible" y encontrarse en Airbnb con que ya no habia lugar.
-    # Cada corrida tarda 15-22 s y los minutos de Actions son ilimitados en
-    # repos publicos, asi que bajarlo no cuesta nada.
-    - cron: "*/15 * * * *"
+    #
+    # Por que 35 y no 15: son 12 consultas a Airbnb por corrida. Cada 15 min
+    # eran 1152 al dia; asi son ~500. Airbnb no publica su limite, y si nos
+    # bloquea el endpoint .ics se muere el calendario entero -- o sea la
+    # funcion principal del sitio. Los gestores de canales consultan cada
+    # 30-60 min: quedarse ahi es lo prudente.
+    #
+    # OJO con la sintaxis: "*/35" dispara en el minuto 0 y en el 35 de cada
+    # hora, asi que los huecos alternan 35 y 25 minutos, no 35 fijos. Da un
+    # promedio de 30, que es justo lo que buscamos.
+    - cron: "*/35 * * * *"
   workflow_dispatch:         # boton para correrlo a mano
 
 permissions:
