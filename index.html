@@ -588,7 +588,23 @@ footer{background:var(--ink);padding:56px 20px}
      en un script pegado al elemento, mucho antes del final del body, y
      necesita saber si esos archivos fueron reemplazados desde el panel.
      Pesa unos cientos de bytes. -->
-<script src="medios.js"></script>
+<script>
+/* medios.js se pide con un sello de minuto pegado al nombre.
+   GitHub Pages responde con Cache-Control: max-age=600, o sea que el navegador
+   se queda con la copia vieja 10 minutos. Sin esto, alguien cambia una foto
+   desde el panel, la publicacion funciona, y en su propio telefono sigue
+   viendo la de antes -- y da por hecho que se rompio.
+
+   El _headers del repo resolveria esto, pero GitHub Pages lo ignora: solo lo
+   leen Cloudflare Pages y Netlify.
+
+   Va con document.write y no con un <script src> fijo porque el sello tiene
+   que calcularse al abrir la pagina, y tampoco con fetch porque esto tiene que
+   estar resuelto ANTES de que el hero elija su video, mucho mas arriba que el
+   final del body. document.write es sincrono y para esto es lo correcto.
+   El archivo es del mismo dominio, asi que Chrome no lo interviene. */
+document.write('<script src="medios.js?t=' + Math.floor(Date.now() / 60000) + '"><\/script>');
+</script>
 <script>
 /* ---------- fotos y videos cambiados desde admin.html ----------
    El id del espacio es el nombre del archivo por defecto sin extensión —
