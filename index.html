@@ -500,6 +500,31 @@ footer{background:var(--ink);padding:56px 20px}
   .split .media{margin-top:28px}
   .split .media img{height:240px}
 }
+
+/* ---------- el apilado, también en celular ----------
+   Mismo efecto que en escritorio: la hoja queda fija justo debajo del nav y
+   la siguiente le pasa por encima al bajar.
+
+   Solo donde el contenido entra en una pantalla. Con overflow:hidden lo que
+   no entra no se ve, y en un iPhone SE las hojas crecen más que la pantalla
+   (las medí en 627, 681 y 629 sobre 601 útiles). Por eso el corte en
+   min-height:700px: el SE, que mide 667, se queda en el flujo normal de
+   arriba, con todo el contenido visible. */
+@media (max-width:900px) and (min-height:700px){
+  .stack > .slide{
+    position:sticky;
+    top:var(--nav-h);
+    min-height:calc(100vh - var(--nav-h));
+    min-height:calc(100svh - var(--nav-h));
+    overflow:hidden;
+    background:var(--bone);   /* opaco a propósito: si no, se transparenta la hoja de abajo */
+    /* Pegada a top:var(--nav-h) la hoja ya arranca debajo del nav; sumarle
+       var(--nav-h) al padding, como hace el bloque de arriba, lo contaría
+       dos veces y con overflow:hidden eso recorta por abajo. */
+    padding:44px 0 48px;
+    border-bottom:0;          /* el corte entre hojas lo da el apilado, no una línea */
+  }
+}
 </style>
 </head>
 <body>
