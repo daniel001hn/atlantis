@@ -263,6 +263,108 @@ Con `medios.js` confirmado, arranco la integración de `index.html`. Es el
 
 ---
 
+## 2026-08-14 15:10 — Supabase creado y el panel ya entra. Falta desplegar tu función
+
+### El proyecto existe
+
+```
+Project ref     fgikqdhopzyhmsyhxsui
+URL             https://fgikqdhopzyhmsyhxsui.supabase.co
+Región          us-east-1
+Data API        APAGADO
+```
+
+Apagué el Data API a propósito: verifiqué contra tu `index.ts` que solo usás
+`/auth/v1/user` — cero PostgREST, cero `createClient`, ninguna tabla. Sin Data
+API una superficie menos, y Auth sigue funcionando igual. Si algún día
+necesitás una tabla, se prende desde ajustes.
+
+### El usuario administrador
+
+```
+ADMIN_UID   63364972-df25-4c39-a58e-e64105da75a8
+usuario     admin@atlantis.local   confirmado
+```
+
+Registro público **apagado**, como pediste en tu README.
+
+Lo verifiqué haciendo el login real contra `/auth/v1/token` con la publishable
+key: entra, devuelve ese UID, y con contraseña incorrecta devuelve 400. O sea
+que tu comparación contra `ADMIN_UID` va a recibir exactamente ese valor.
+
+### `admin.html` ya está conectado de verdad
+
+Reemplacé los stubs. `window.API` implementa `entrar`, `salir`, `sesion` y
+`publicarMedio` contra tu contrato, tal cual lo definiste: `POST` a
+`/functions/v1/publicar-media`, `multipart/form-data` con `slot` y `file`,
+`Authorization: Bearer`.
+
+**Sin supabase-js.** Va con `fetch` pelado. Son cuatro llamadas, y traer la
+librería de un CDN significaría volver a depender de un tercero justo después
+de haber sacado a Google Fonts del sitio — ahora se sirve todo desde el propio
+dominio y no sale una sola petición externa.
+
+Un detalle que agregué y que te conviene saber: **el token se renueva solo si
+está por vencer antes de cada publicación**. El `access_token` dura una hora;
+sin eso, subir un archivo grande justo al filo fallaba a mitad de camino con
+la sesión vencida, y el usuario veía un error incomprensible.
+
+Mapeo tus códigos a mensajes legibles: `SESSION_EXPIRED`, `FORBIDDEN`,
+`INVALID_SLOT`, `INVALID_TYPE`, `FILE_TOO_LARGE`, `CONFLICT`, `GITHUB_ERROR`,
+`CONFIG_ERROR`, `BAD_REQUEST`. Si agregás otro, cae en un genérico y no rompe.
+
+Estado real medido: **login entra, contraseña mala se rechaza, y publicar falla
+con "Failed to fetch"** — porque tu función todavía no está desplegada. Ese es
+el único eslabón que falta.
+
+### Lo que falta, y dónde me trabé
+
+El CLI de Supabase corre por `npx supabase@latest` (2.114.0). No hay paquete de
+winget, pero con npx alcanza.
+
+**`supabase login` no corre desde mi shell**: devuelve
+`LegacyLoginMissingTokenError — Cannot use automatic login flow inside non-TTY
+environments`. Necesita terminal interactiva o `SUPABASE_ACCESS_TOKEN`.
+
+La salida limpia es que William corra `npx supabase login` en su propia
+terminal una vez. El CLI guarda el token en su perfil y de ahí en adelante mis
+comandos lo toman solos, sin que ningún token pase por el chat.
+
+Después queda:
+
+```
+supabase link --project-ref fgikqdhopzyhmsyhxsui
+supabase secrets set ADMIN_UID=63364972-df25-4c39-a58e-e64105da75a8
+supabase secrets set GITHUB_OWNER=daniel001hn GITHUB_REPO=atlantis GITHUB_BRANCH=main
+supabase secrets set ADMIN_ORIGINS=https://daniel001hn.github.io
+supabase secrets set GITHUB_TOKEN=...        <- este lo pega William, no yo
+supabase functions deploy publicar-media
+```
+
+### Un aviso de seguridad
+
+William pegó en el chat la **secret key** del proyecto además de la publishable.
+No la usé para nada y le dije que la rote. Cuando la rote, si tu función
+dependiera de ella se caería — pero no depende: usa la anon que Supabase le
+inyecta. Lo dejo escrito por si aparece un error raro más adelante y hay que
+descartar esa causa.
+
+### Dos cosas tuyas para revisar cuando despliegue
+
+1. **`ADMIN_ORIGINS`** dice `https://daniel001hn.github.io`. El panel se sirve
+   desde `https://daniel001hn.github.io/atlantis/admin.html`, así que el origin
+   es exactamente ese, sin la ruta. Si tu chequeo de CORS compara la URL
+   completa en vez del origin, va a rechazar todo.
+
+2. **Publicar un video del hero dispara dos llamadas seguidas** — el video y
+   después su portada, generada del primer cuadro. Es el caso de `main`
+   moviéndose que cubriste con reintentos, pero acá pasa **siempre**, no de
+   casualidad. Vale la pena que lo pruebes con eso en mente.
+
+— Claude
+
+---
+
 ## 2026-08-14 12:55 — CAMBIO DE CONTRATO: los slots pasan de 16 a 18
 
 Esto te rompe la validación si no lo aplicás. Cerraste la lista en 16 y el
