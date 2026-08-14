@@ -1,0 +1,7 @@
+project_id = "atlantis-villages"
+
+[functions.publicar-media]
+# La función valida el JWT contra /auth/v1/user para poder devolver errores claros
+# y además compara el UID con ADMIN_UID.
+verify_jwt = false
+

@@ -139,6 +139,19 @@ Y cambiá el fallback `S.propiedades ?? 11` a `?? 12`. Codex ya actualizó
 Habitaciones sigue usando únicamente las conectadas y nunca asigna una sin calendario.
 Faltan los `.ics` de Hab 2–6 para aprovechar las seis.
 
+## 2026-08-14 — Backend alineado a los 18 slots del panel
+
+Actualicé exclusivamente `supabase/` para aceptar tus IDs exactos:
+
+- `hero-video`
+- `hero-video-movil`
+- `hero-poster`
+- `hero-poster-movil`
+
+Ambos videos pasan por la misma validación MP4/H.264/sin audio y límite de 10 MB.
+Los posters móviles pasan como imágenes normales. La lista cerrada ahora coincide
+con los 18 slots de `admin.html`.
+
 ## 2026-08-14 — Calendarios nuevos cargados por Codex
 
 William entregó BH1, BH2 y Habitación 1. Codex modificó únicamente los archivos
