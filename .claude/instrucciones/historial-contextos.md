@@ -124,3 +124,137 @@
 4. Inicializar/subir el repo a GitHub y activar ambos workflows.
 5. Crear u ocultar Política de privacidad.
 6. Confirmar que el deep link de Airbnb precarga `check_in`/`check_out`.
+
+## Contexto guardado — 2026-08-15 (backend, panel de fotos, verificación y entrega)
+
+Sesión larga: el sitio pasó de estático-con-datos-inventados a un sistema completo con
+backend, panel de administración y verificación en tiempo real. Trabajado en paralelo
+con Codex vía `chat/`.
+
+### Decisiones técnicas
+
+- **El repo vive en `github.com/daniel001hn/atlantis`, público**, servido por GitHub
+  Pages. Público a propósito: Pages en repos privados exige plan pago, y no hay nada
+  secreto en el árbol.
+- **Supabase solo aporta Auth + Edge Functions.** El **Data API está APAGADO**: se
+  verificó contra el código de las funciones que únicamente usan `/auth/v1/user` — cero
+  PostgREST, cero tablas. Una superficie menos.
+- **El token de GitHub vive como secret de la Edge Function**, jamás en el navegador. El
+  panel publica llamando a la función; la función commitea por la API de GitHub.
+- **Login con usuario, no con correo** — mismo patrón que Plaza Stefany: el JS pega
+  `@atlantis.local` por detrás. Campo `type=text`, no `type=email` (con `email` el
+  navegador rechaza `admin` por no tener arroba).
+- **`admin.html` habla con Supabase por `fetch` pelado, sin supabase-js.** Son cuatro
+  llamadas; traer la librería de un CDN reintroduce un tercero justo después de haber
+  sacado a Google Fonts del sitio.
+- **El token se renueva antes de cada publicación si está por vencer.** El
+  `access_token` dura una hora; sin esto, subir un archivo grande justo al filo falla a
+  mitad de camino.
+- **`medios.js`, no `medios.json`** — `fetch` falla desde `file://` y el index se abre
+  con doble clic para revisarlo. Mismo patrón que `disponibilidad.js` y `stats.js`.
+- **La portada del hero se genera sola** del primer cuadro del video al publicarlo.
+  Dejarla a mano garantiza que algún día quede la portada de un video que ya no existe.
+- **Dos videos de hero, elegidos por FORMA de ventana** (`max-aspect-ratio: 1/1`), no por
+  ancho: un teléfono acostado recibe el horizontal, que es lo correcto. Va en JS y no con
+  `<source media>` porque **Chrome ignora ese atributo dentro de `<video>`**.
+- **Cron de disponibilidad cada 35 minutos.** Era cada 2 h. No se bajó a 15 porque son 12
+  consultas a Airbnb por corrida: 1152/día contra ~500. Airbnb no publica su límite y si
+  bloquea el `.ics` **se muere el calendario entero**.
+- **Tipografías servidas desde el propio dominio.** Cero peticiones externas en todo el
+  sitio.
+- **Precio de este trabajo, para referencia futura:** $1,500–2,500 vendido localmente;
+  $6,000–12,000 a cliente de EE.UU. Mantenimiento $40–100/mes — a dos años vale más que
+  el desarrollo.
+
+### Estado actual
+
+Todo funciona y está verificado en el sitio publicado (0 errores de consola, 0 imágenes
+rotas, 0 links muertos, sin desborde a 1440 y 390):
+
+- **12/12 calendarios conectados**, refrescando solos cada 35 min.
+- **`publicar-media`** desplegada: el panel publica fotos y videos desde el celular.
+- **`verificar-fechas`** desplegada: chequea la unidad asignada antes de abrir Airbnb.
+- **6/6 respuestas del FAQ**, política de privacidad, CSP, robots y sitemap.
+- Hero: 11.8 MB → 2.5 MB. Logo 718 KB → 35 KB. Compartir por WhatsApp muestra una villa.
+
+### Restricciones críticas
+
+- **`_headers` NO HACE NADA en GitHub Pages.** Lo leen Cloudflare Pages y Netlify. Fue un
+  error citarlo como protección activa; Codex lo corrigió. CSP y `Referrer-Policy` van
+  como `<meta http-equiv>`. **`frame-ancestors` y `X-Content-Type-Options` no se pueden
+  desde `<meta>`** — quedan descubiertos hasta que se mude a Cloudflare.
+- **GitHub Pages responde `Cache-Control: max-age=600`.** Sin romper ese caché, cambiar
+  una foto desde el panel "no hace nada" durante 10 minutos y el usuario cree que se
+  rompió. `medios.js` se pide con `?t=<minuto>` vía `document.write`.
+- **Nunca pasar un secret con `&` como argumento de línea de comandos en Windows.** Usar
+  `--env-file`.
+- **`ALLOWED_ORIGINS` está fijo en el código de `verificar-fechas`** y `ADMIN_ORIGINS`
+  como secret. Al comprar dominio propio hay **cuatro lugares** que cambiar juntos: esos
+  dos, `og:image`/`og:url` y `sitemap.xml`. Si no, la verificación devuelve 403 y **por el
+  fail-open nadie lo nota**.
+- **El cron de GitHub arranca con hasta 36 minutos de retraso** (medido: 16:30, 14:36,
+  13:02, 11:00 con `0 */2`). No confiar en la hora programada.
+- **Re-run de una corrida vieja reproduce el commit de aquel momento** y el push se
+  rechaza. Para probar hay que lanzar una corrida NUEVA desde el workflow, no reintentar.
+- **Edge 151 bloquea el depurador sobre el perfil por defecto.** No se puede automatizar
+  el navegador con las sesiones del usuario.
+- **`supabase login` no corre en shell no interactiva.** Requiere `--token` o
+  `SUPABASE_ACCESS_TOKEN`.
+
+### Archivos clave
+
+- `admin.html` — panel, 18 espacios. Todo lo de Supabase pasa por `window.API`.
+- `medios.js` — manifiesto que genera la Edge Function. `window.MEDIOS.slots`.
+- `privacidad.html`, `robots.txt`, `sitemap.xml`, `SEGURIDAD.md` — nuevos.
+- `fuentes.css` + `fuentes/` (16 woff2) + `scripts/fuentes.mjs`.
+- `supabase/functions/publicar-media/` y `verificar-fechas/` — de Codex, no tocar.
+- `chat/` — canal con Codex. Un dueño por archivo, cada uno escribe solo el suyo.
+
+### Errores resueltos
+
+- **La verificación de fechas devolvía siempre `libre: true`** → el secret `ICS_URLS` se
+  cargó pasando el JSON como argumento; **las URLs llevan `&` y el shell de Windows las
+  rompió** → recargar con `--env-file`. El código de Codex estaba bien.
+  **Lección grande: el fail-open hizo que un secret roto se viera idéntico a todo
+  funcionando.** La función no verificaba nada y nadie se habría enterado.
+- **Cambiar una foto "no hacía nada"** → `max-age=600` de GitHub Pages → sello de minuto
+  en `medios.js`.
+- **El hero se veía borroso en escritorio** → el video era 1080x1920 vertical y con
+  `object-fit:cover` se estiraba 1.78x en un monitor de 1920 → video horizontal nativo.
+- **En el celular solo se veía el 26% del ancho del video** → cover recorta → segundo
+  video vertical elegido por forma de ventana.
+- **El formulario del hero medía 494px de alto** → `.f{flex:1 1 130px}` escrito para la
+  fila horizontal; **al pasar a columna el basis pasa a ser ALTO** → `flex:0 0 auto`.
+- **Las tres láminas se volvían contenido corrido en móvil** → el sticky se apagaba bajo
+  901px → bloque nuevo con `min-height:calc(100svh - var(--nav-h))` y `column-reverse`
+  para poner el texto antes que la foto.
+- **`metaVideo()` se colgaba en "Revisando el video…"** → `preload="metadata"` solo no
+  dispara la carga → `v.load()` explícito (responde en 2 ms) + límite de 8 s.
+- **El botón quedaba en "Verificando…" para siempre** si el servidor aceptaba la conexión
+  y no respondía → `Promise.race` contra un reloj propio, además del `AbortController`.
+  Salió en la prueba, no en teoría.
+- **La ventana de Airbnb se bloqueaba como emergente** → abrirla vacía DENTRO del clic y
+  ponerle el destino al terminar.
+- **El cron falló con `! [rejected] main -> main`** → el workflow no reintentaba y
+  cualquier push nuestro durante la corrida la perdía entera → rebase + 3 reintentos.
+- **`disponibilidad.js` perdía unidades** → el script lo armaba solo con lo que hubiera en
+  `ICS_URLS`; olvidar el secret borraba calendarios sin error. Pasó **dos veces en un
+  día** → ahora conserva las que no vienen y las lista en el log.
+- **`og:image` era ruta relativa y apuntaba al logo** → WhatsApp no mostraba nada → URL
+  absoluta, JPG (no WebP: WhatsApp no lo renderiza confiable), 1200x630.
+
+### Próximos pasos
+
+1. **Rotar las credenciales que se pegaron en el chat** durante la instalación: token
+   personal de Supabase (`sbp_…`), token de GitHub (`github_pat_…`, hay que
+   **reemplazarlo**, no solo revocarlo, o el panel deja de publicar) y la secret key del
+   proyecto (`sb_secret_…`). Ninguna llegó al repositorio. Detalle en `SEGURIDAD.md`.
+2. **Probar el panel con el dedo desde el iPhone.** Verificado por código, nunca por una
+   persona.
+3. **Dominio propio.** `atlantisvillages.com` estaba libre (~$10/año en Cloudflare).
+   `.hn` también, pero **Cloudflare no vende `.hn`** — se compra en `nic.hn`, es trámite
+   local y cuesta bastante más. Al conectarlo, cambiar los cuatro lugares de arriba.
+4. Video vertical en mejor resolución: el actual es **576x1024 porque pasó por WhatsApp**
+   y se agranda 2x en un iPhone. El original sin WhatsApp casi seguro es 1080p.
+5. Transferir el repo al dueño cuando corresponda.
+6. Opcional: cerrar la sesión del panel sola tras N días (hoy queda abierta hasta "Salir").
