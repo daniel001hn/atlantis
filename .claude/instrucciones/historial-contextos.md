@@ -249,8 +249,9 @@ rotas, 0 links muertos, sin desborde a 1440 y 390):
    personal de Supabase (`sbp_…`), token de GitHub (`github_pat_…`, hay que
    **reemplazarlo**, no solo revocarlo, o el panel deja de publicar) y la secret key del
    proyecto (`sb_secret_…`). Ninguna llegó al repositorio. Detalle en `SEGURIDAD.md`.
-2. **Probar el panel con el dedo desde el iPhone.** Verificado por código, nunca por una
-   persona.
+2. ~~Probar el panel con el dedo desde el iPhone.~~ **HECHO el 15/08:** William lo probó
+   desde el teléfono y publica bien. El circuito completo queda verificado por una
+   persona, no solo por código.
 3. **Dominio propio.** `atlantisvillages.com` estaba libre (~$10/año en Cloudflare).
    `.hn` también, pero **Cloudflare no vende `.hn`** — se compra en `nic.hn`, es trámite
    local y cuesta bastante más. Al conectarlo, cambiar los cuatro lugares de arriba.
