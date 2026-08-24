@@ -1,6 +1,6 @@
 /* Generado por scripts/actualizar-disponibilidad.mjs - no editar a mano. */
 window.DISPONIBILIDAD = {
-  "actualizado": "2026-08-24 16:06",
+  "actualizado": "2026-08-24 17:08",
   "unidades": {
     "1000767203641214772": [
       "2026-08-21",
@@ -92,6 +92,9 @@ window.DISPONIBILIDAD = {
       "2026-08-29"
     ],
     "1263164443428189188": [
+      "2026-08-25",
+      "2026-08-26",
+      "2026-08-27",
       "2026-09-13",
       "2026-09-14",
       "2026-09-15",
