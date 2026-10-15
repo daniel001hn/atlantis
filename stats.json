@@ -1,7 +1,7 @@
 {
-  "actualizado": "2026-10-01",
+  "actualizado": "2026-10-15",
   "rating": 4.91,
-  "resenas": 816,
+  "resenas": 824,
   "propiedades": 12,
   "unidades": {
     "1000767203641214772": {
@@ -10,8 +10,8 @@
       "nombre": "Townhouse Neptun"
     },
     "1001578383448277292": {
-      "rating": 4.96,
-      "resenas": 85,
+      "rating": 4.97,
+      "resenas": 86,
       "nombre": "Townhouse Poseidon"
     },
     "1243126377088285474": {
@@ -21,7 +21,7 @@
     },
     "1242956510290064184": {
       "rating": 4.9,
-      "resenas": 62,
+      "resenas": 63,
       "nombre": "BH2"
     },
     "1259801398338647733": {
@@ -40,8 +40,8 @@
       "nombre": "Hab 2"
     },
     "1259698504611212201": {
-      "rating": 4.84,
-      "resenas": 51,
+      "rating": 4.85,
+      "resenas": 53,
       "nombre": "Hab 3"
     },
     "1261125295591084048": {
@@ -55,13 +55,13 @@
       "nombre": "Hab 5"
     },
     "1261122689607455594": {
-      "rating": 4.8,
-      "resenas": 56,
+      "rating": 4.81,
+      "resenas": 57,
       "nombre": "Hab 6"
     },
     "1260997035712609167": {
-      "rating": 4.91,
-      "resenas": 69,
+      "rating": 4.92,
+      "resenas": 72,
       "nombre": "Loft 2"
     }
   }
